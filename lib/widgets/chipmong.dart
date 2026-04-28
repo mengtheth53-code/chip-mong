@@ -17,9 +17,7 @@ class ChipmongBrand extends StatelessWidget {
             shape: BoxShape.circle,
             color: Colors.white,
             image: const DecorationImage(
-              image: NetworkImage(
-                'https://images.crunchbase.com/image/upload/c_pad,f_auto,q_auto:eco,dpr_1/ujrwed9bibpujkrzshvt?ik-sanitizeSvg=true',
-              ),
+              image: AssetImage('assets/images/chip_mong_logo.png'),
               fit: BoxFit.cover,
             ),
             border: Border.all(color: Colors.white, width: 4),

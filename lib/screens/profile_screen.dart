@@ -331,22 +331,9 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           child: ClipOval(
-            child: Image.network(
-              'https://images.crunchbase.com/image/upload/c_pad,h_256,w_256,f_auto,q_auto:eco,dpr_1/ujrwed9bibpujkrzshvt?ik-sanitizeSvg=true',
+            child: Image.asset(
+              'assets/images/chip_mong_logo.png',
               fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const Center(
-                  child: SizedBox(
-                    width: 14,
-                    height: 14,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-                );
-              },
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(
                   Icons.account_balance,
