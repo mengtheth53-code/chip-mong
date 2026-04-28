@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'poster.dart';
+import '../widgets/poster.dart';
 
 class PromotionScreen extends StatelessWidget {
   const PromotionScreen({super.key});
@@ -110,10 +110,8 @@ class _PosterCard extends StatelessWidget {
             width: double.infinity,
             height: 190,
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              height: 180,
-              color: Colors.green[100],
-            ),
+            errorBuilder: (_, __, ___) =>
+                Container(height: 180, color: Colors.green[100]),
           ),
           Padding(
             padding: const EdgeInsets.all(12),

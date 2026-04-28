@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'app_theme.dart';
-import 'poster.dart';
-import 'widgets/app_screen_header.dart';
-
-
+import '../theme/app_theme.dart';
+import '../widgets/poster.dart';
+import '../widgets/app_screen_header.dart';
 
 class BorrowScreen extends StatelessWidget {
   const BorrowScreen({super.key});
 
- 
   static final List<ProductItem> _products = productList;
 
   @override
@@ -38,8 +35,6 @@ class BorrowScreen extends StatelessWidget {
   }
 }
 
-
-
 class _ProductCard extends StatelessWidget {
   final ProductItem item;
 
@@ -56,7 +51,6 @@ class _ProductCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            
             Image.network(
               item.imageUrl,
               fit: BoxFit.cover,
@@ -67,7 +61,6 @@ class _ProductCard extends StatelessWidget {
                   Container(color: Colors.grey.shade400),
             ),
 
-           
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(

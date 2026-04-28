@@ -7,7 +7,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:bank/bank_app_module/chip_mong_app.dart';
+import 'package:bank/chip_mong_app.dart';
 
 void main() {
   testWidgets('app builds', (WidgetTester tester) async {

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'app_theme.dart';
-import 'chipmong.dart';
+import '../theme/app_theme.dart';
+import '../widgets/chipmong.dart';
 import 'language_selection_screen.dart';
 
 class SplashScreen extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'app_theme.dart';
-import 'widgets/app_screen_header.dart';
+import '../theme/app_theme.dart';
+import '../widgets/app_screen_header.dart';
 
 class ContactSupportScreen extends StatefulWidget {
   const ContactSupportScreen({super.key});

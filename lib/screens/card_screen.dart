@@ -3,8 +3,8 @@ import 'dart:math' as math;
 
 import 'package:google_fonts/google_fonts.dart';
 
-import 'app_theme.dart';
-import 'widgets/app_screen_header.dart';
+import '../theme/app_theme.dart';
+import '../widgets/app_screen_header.dart';
 
 class CardProduct {
   final String titleKh;

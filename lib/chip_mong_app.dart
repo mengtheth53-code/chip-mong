@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'app_theme.dart';
-import 'splash_screen.dart';
+import 'theme/app_theme.dart';
+import 'screens/splash_screen.dart';
 
 class ChipMongApp extends StatelessWidget {
   const ChipMongApp({super.key});

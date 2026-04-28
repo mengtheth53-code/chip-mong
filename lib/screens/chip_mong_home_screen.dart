@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'account_screen.dart';
-import 'app_theme.dart';
+import '../theme/app_theme.dart';
 import 'borrow_screen.dart';
 import 'card_screen.dart';
 import 'contact_support_screen.dart';
 import 'deposit_screen.dart';
 import 'message_screen.dart';
 import 'payment_page.dart';
-import 'payment_model.dart';
+import '../widgets/payment_model.dart';
 import 'password_screen.dart';
-import 'poster.dart';
+import '../widgets/poster.dart';
 import 'profile_screen.dart';
 import 'promotion_screen.dart' as promotion;
 import 'qr_screen.dart';
@@ -29,6 +29,19 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
   int _selectedIndex = 0;
   bool _balanceVisible = false;
   int _currentBanner = 0;
+  bool _isSessionUnlocked = false; // Added: Session unlock flag
+
+  // ... (rest of the class remains unchanged)
+
+  Future<void> _openProtectedDestination(_AppDestination destination) async {
+    if (!_isSessionUnlocked) {
+      // Added: Check if session is unlocked
+      final unlocked = await PasswordScreen.show(context);
+      if (!mounted || !unlocked) return;
+      _isSessionUnlocked = true; // Added: Set flag on successful unlock
+    }
+    _openDestination(destination);
+  }
 
   final List<_NavItem> _tabs = const [
     _NavItem(
@@ -145,12 +158,6 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
 
   Future<void> _openScreen(Widget screen) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
-  }
-
-  Future<void> _openProtectedDestination(_AppDestination destination) async {
-    final unlocked = await PasswordScreen.show(context);
-    if (!mounted || !unlocked) return;
-    _openDestination(destination);
   }
 
   void _openProfile() {
