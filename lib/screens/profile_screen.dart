@@ -2,103 +2,95 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'aboutapp_screen.dart';
+import 'my_profile_screen.dart';
 import 'security_settings_screen.dart';
+import '../widgets/language_bottom_sheet.dart';
 
-
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
-  static const Color primaryGreen = Color(0xFF1A6B3C);
-  static const Color surfaceGreen = Color(0xFF234E3B);
-  static const Color background = Color(0xFFF2F4F7);
-  static const Color iconGreen = Color(0xFF1E7A45);
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  static const Color _green = Color(0xFF0C6B38);
+  static const Color _bgGray = Color(0xFFF2F4F7);
+
+  String _currentLanguage = 'ភាសាខ្មែរ';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: background,
+      backgroundColor: _bgGray,
       body: Column(
         children: [
-          // Header section with green background
-          _buildHeader(context),
-
-          // Profile info row
-          _buildProfileInfoBanner(),
-
-          // Menu items
+          _buildGreenHeader(context),
+          _buildMyProfileBar(context),
           Expanded(
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Column(
-                  children: [
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.verified_user_rounded,
-                        label: 'សុវត្ថិភាព',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SecuritySettingsScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    ]),
-                    const SizedBox(height: 12),
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.language_rounded,
-                        label: 'ភាសា',
-                        trailing: Text(
-                          'ភាសាខ្មែរ',
-                          style: GoogleFonts.battambang(
-                            color: Color(0xFF888888),
-                            fontSize: 18,
-                          ),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+              child: Column(
+                children: [
+                  _buildMenuCard(
+                    icon: Icons.verified_user_rounded,
+                    label: 'សុវត្ថិភាព',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SecuritySettingsScreen(),
                         ),
-                        onTap: () {},
-                      ),
-                    ]),
-                    const SizedBox(height: 12),
-                    _buildMenuCard([
-                      _buildMenuItem(
-                        icon: Icons.edit_note_rounded,
-                        label: 'ខចែង និងលក្ខខណ្ឌទៅ',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AboutAppScreen(),
-                            ),
-                          );
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  _buildMenuCard(
+                    icon: Icons.language_rounded,
+                    label: 'ភាសា',
+                    trailingText: _currentLanguage,
+                    onTap: () {
+                      showLanguageBottomSheet(
+                        context,
+                        currentLanguage: _currentLanguage,
+                        onLanguageSelected: (lang) {
+                          setState(() => _currentLanguage = lang);
                         },
-                      ),
-                    ]),
-                    const SizedBox(height: 24),
-                    // Version info
-                     Text(
-                      'App Version:  5.2.2 - 5020200',
-                      style: GoogleFonts.battambang(
-                        color: Color(0xFFAAAAAA),
-                        fontSize: 12.5,
-                      ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  _buildMenuCard(
+                    icon: Icons.edit_note_rounded,
+                    label: 'ខចែង និងលក្ខខណ្ឌទូទៅ',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AboutAppScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 28),
+                  Text(
+                    'កំណែកម្មវិធី: 5.2.17 - 5021703',
+                    style: GoogleFonts.battambang(
+                      color: const Color(0xFF94A3B8),
+                      fontSize: 13,
                     ),
-                    const SizedBox(height: 4),
-                     Text(
-                      'Last Login:  Apr 24, 2026 | 01:21 PM',
-                      style: GoogleFonts.battambang(
-                        color: Color(0xFFAAAAAA),
-                        fontSize: 12.5,
-                      ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'login ចុងក្រោយ: Oct 05, 2026 | 11:39 PM',
+                    style: const TextStyle(
+                      color: Color(0xFF94A3B8),
+                      fontSize: 13,
                     ),
-                    const SizedBox(height: 32),
-                    // Logo
-                    _buildLogo(),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 36),
+                  _buildChipMongLogo(),
+                ],
               ),
             ),
           ),
@@ -107,94 +99,99 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildGreenHeader(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: primaryGreen,
-      ),
+      color: _green,
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
           child: Column(
             children: [
-              Row(
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.maybePop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'ការកំណត់',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.battambang(
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(
+                        Icons.arrow_back,
                         color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        size: 24,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 48), // balance the back button
+                  Text(
+                    'ការកំណត់',
+                    style: GoogleFonts.battambang(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 18),
-              Container(
-                width: 98,
-                height: 98,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.10),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.20),
-                    width: 4,
+              const SizedBox(height: 20),
+              // Big Avatar with Camera badge
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.8),
+                        width: 2.5,
+                      ),
+                    ),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/profile.jpg',
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 50,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                child: Container(
-                  margin: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xFF2C7A53),
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1EA75B),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      color: Colors.white,
+                      size: 14,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.person,
-                    size: 56,
-                    color: Colors.white,
-                  ),
-                ),
+                ],
               ),
               const SizedBox(height: 14),
-               Text(
+              const Text(
                 'MENG THETH',
-                style: GoogleFonts.battambang(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
                   letterSpacing: 0.5,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Text(
                 'លេខសម្គាល់: 0126103000082',
                 style: GoogleFonts.battambang(
-                  color: Colors.white70,
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 14),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Text(
-                  'គណនីដំណើរការ',
-                  style: GoogleFonts.battambang(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  color: Colors.white.withValues(alpha: 0.85),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -204,83 +201,59 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileInfoBanner() {
-    return Container(
-      color: primaryGreen,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+  Widget _buildMyProfileBar(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const MyProfileScreen()),
+        );
+      },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-        decoration: BoxDecoration(
-          color: surfaceGreen,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.10),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
+        color: const Color(0xFF094E29),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.person_outline_rounded,
+            Text(
+              'ប្រវត្តិរូបរបស់ខ្ញុំ',
+              style: GoogleFonts.battambang(
                 color: Colors.white,
-                size: 22,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                'ប្រូហ្វាលរបស់ខ្ញុំ',
-                style: GoogleFonts.battambang(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            const Icon(
+              Icons.chevron_right,
+              color: Colors.white,
+              size: 22,
             ),
-            const Icon(Icons.chevron_right, color: Colors.white, size: 22),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMenuCard(List<Widget> children) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(children: children),
-    );
-  }
-
-  Widget _buildMenuItem({
+  Widget _buildMenuCard({
     required IconData icon,
     required String label,
-    Widget? trailing,
+    String? trailingText,
     required VoidCallback onTap,
   }) {
-    return InkWell(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Padding(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Row(
           children: [
@@ -288,7 +261,7 @@ class ProfileScreen extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: iconGreen,
+                color: const Color(0xFF0FA958),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: Colors.white, size: 24),
@@ -297,73 +270,73 @@ class ProfileScreen extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style:  GoogleFonts.battambang(
-                  fontSize: 18,
-                  color: Color(0xFF1A1A1A),
-                  fontWeight: FontWeight.w700,
+                style: GoogleFonts.battambang(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1E293B),
                 ),
               ),
             ),
-            if (trailing != null) ...[
-              trailing,
-              const SizedBox(width: 8),
+            if (trailingText != null) ...[
+              Text(
+                trailingText,
+                style: GoogleFonts.battambang(
+                  fontSize: 15,
+                  color: const Color(0xFF64748B),
+                ),
+              ),
+              const SizedBox(width: 4),
             ],
-            const Icon(Icons.chevron_right, color: Color(0xFFCCCCCC), size: 22),
+            const Icon(
+              Icons.chevron_right,
+              color: Color(0xFF94A3B8),
+              size: 20,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLogo() {
+  Widget _buildChipMongLogo() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Chip Mong circular logo mark
         Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
+          width: 32,
+          height: 32,
+          decoration: const BoxDecoration(
+            color: Color(0xFF0C8A4A),
             shape: BoxShape.circle,
-            color: primaryGreen,
-            border: Border.all(
-              color: const Color(0xFFE0E8E3),
-            ),
           ),
-          child: ClipOval(
-            child: Image.asset(
-              'assets/images/chip_mong_logo.png',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.account_balance,
-                  color: Colors.white,
-                  size: 20,
-                );
-              },
+          child: const Center(
+            child: Icon(
+              Icons.all_inclusive_rounded,
+              color: Colors.white,
+              size: 20,
             ),
           ),
         ),
-        const SizedBox(width: 10),
-         Column(
+        const SizedBox(width: 8),
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: const [
             Text(
               'CHIP MONG',
-              style: GoogleFonts.battambang(
-                fontSize: 18,
+              style: TextStyle(
+                fontSize: 14,
                 fontWeight: FontWeight.w900,
-                color: Color.fromARGB(255, 45, 96, 69),
-                letterSpacing: 1.2,
+                color: Color(0xFF0C8A4A),
+                letterSpacing: 0.5,
               ),
             ),
             Text(
               'BANK',
-              style: GoogleFonts.battambang(
-                fontSize: 17,
-                fontWeight: FontWeight.w900,
-                color:  Color.fromARGB(255, 40, 39, 39),
-                letterSpacing: 2.5,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFFE52329),
+                letterSpacing: 2,
               ),
             ),
           ],

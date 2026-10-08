@@ -1,275 +1,379 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class _QuickServiceItem {
-  final String title;
-  const _QuickServiceItem(this.title);
+void showQuickServicesSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) => const ServiceScreen(),
+  );
 }
 
-class ServiceScreen extends StatelessWidget {
+class ServiceScreen extends StatefulWidget {
   const ServiceScreen({super.key});
 
-  static const _green = Color(0xFF0FA958);
-  static const _bgGray = Color(0xFFF5F5F5);
-
-  static const _quickItems = <_QuickServiceItem>[
-    _QuickServiceItem('ផ្ទេរប្រាក់ក្រៅប្រទេសតាមរយៈប្រព័ន្ធ SWIFT'),
-    _QuickServiceItem('អគ្គីសនីកម្ពុជា'),
-    _QuickServiceItem('អេហ្វដាប់ប៊ែលយូឌី ខេមបូឌា'),
-    _QuickServiceItem('ផ្ទេរប្រាក់ទៅគណនីខ្លួនឯង'),
-    _QuickServiceItem('ផ្ទេរប្រាក់ទៅគណនី ជីប​ ម៉ុង​ ណាមួយ'),
-    _QuickServiceItem(
-      'សហគ្រាសគ្រប់គ្រងសំរាម សំណល់រឹង និងទីប្រជុំជន រាជធានីភ្នំពេញ ( ស.ស.ភ )',
-    ),
-    _QuickServiceItem('បញ្ចូលលុយទូរស័ព្ទ'),
-    _QuickServiceItem('ក្រសួងសាធារណការ និង ដឹកជញ្ជូន'),
-    _QuickServiceItem('រដ្ឋាករទឹកស្វយ័តក្រុងភ្នំពេញ'),
-    _QuickServiceItem('ក្រសួងការងារ និងបណ្តុះបណ្តាលវិជ្ជាជីវៈ'),
-    _QuickServiceItem('ក្រុមហ៊ុន ផ្លូល្បឿនលឿនភ្នំពេញ - ក្រុងព្រះសីហនុ'),
-    _QuickServiceItem('lbl_bs_transfer_bank_account_retail'),
-    _QuickServiceItem('ផ្ទេរប្រាក់ទៅគណនីធនាគារ'),
-  ];
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bgGray,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title + close button — NO background, just text on gray
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'សេវាកម្មហ័ស',
-                      style: GoogleFonts.battambang(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).maybePop(),
-                    child: Container(
-                      width: 34,
-                      height: 34,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE0E0E0),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.black54,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 6),
-
-             
-              Text(
-                'អ្នកអាចបន្ថែមសេវាកម្មចំនួន 5 ដែលអ្នកធ្វើប្រតិបត្តិការជាញឹកញាប់',
-                style: GoogleFonts.battambang(
-                  fontSize: 13,
-                  color: Color.fromARGB(255, 100, 99, 99),
-                  height: 1.55,
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              
-              Text(
-                'សេវាកម្ម',
-                style: GoogleFonts.notoSansKhmer(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              
-              _EmptyStateCard(),
-              const SizedBox(height: 28),
-
-              
-              Text(
-                'សេវាកម្មផ្សេងៗ',
-                style: GoogleFonts.battambang(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Grouped tiles card
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                 
-                ),
-                child: Column(
-                  children: List.generate(_quickItems.length, (i) {
-                    return _QuickTile(
-                      item: _quickItems[i],
-                      green: _green,
-                      showDivider: i != _quickItems.length - 1,
-                      isFirst: i == 0,
-                      isLast: i == _quickItems.length - 1,
-                    );
-                  }),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  State<ServiceScreen> createState() => _ServiceScreenState();
 }
 
-class _EmptyStateCard extends StatelessWidget {
-  const _EmptyStateCard();
+class _ServiceScreenState extends State<ServiceScreen> {
+  static const Color _green = Color(0xFF0FA958);
+  static const Color _red = Color(0xFFE52329);
+
+  // Active / selected quick services (max 5)
+  final List<String> _selectedServices = [
+    'អគ្គិសនីកម្ពុជា',
+    'ផ្ទេរប្រាក់ក្រៅប្រទេសតាមរយៈប្រព័ន្ធ SWIFT',
+    'ក្រុមហ៊ុន ជីប ម៉ុង លែន',
+  ];
+
+  // Available services
+  final List<String> _availableServices = [
+    'អេហ្វដាប់ប៊ែលយូឌី ខេមបូឌា',
+    'ផ្ទេរប្រាក់ទៅគណនីខ្លួនឯង',
+    'សហគ្រាសគ្រប់គ្រងសំរាម សំណល់រឹង ទីប្រជុំជន រាជធានីភ្នំពេញ ( ស.ស.ភ )',
+    'ការទូទាត់សងប័ណ្ណឥណទាន',
+    'បញ្ចូលលុយទូរសព្ទ',
+    'រដ្ឋាករទឹកស្វយ័តក្រុងភ្នំពេញ',
+    'ក្រសួងសាធារណការ និងដឹកជញ្ជូន',
+  ];
+
+  void _addService(String service) {
+    if (_selectedServices.length >= 5) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('អ្នកអាចបន្ថែមសេវាកម្មបានត្រឹមតែ ៥ ប៉ុណ្ណោះ'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    setState(() {
+      _availableServices.remove(service);
+      _selectedServices.add(service);
+    });
+  }
+
+  void _removeService(String service) {
+    setState(() {
+      _selectedServices.remove(service);
+      _availableServices.insert(0, service);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-       
+      height: MediaQuery.of(context).size.height * 0.88,
+      decoration: const BoxDecoration(
+        color: Color(0xFFF1F4F2),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: const Color(0xFFEEEEEE),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.north_east_rounded,
-              color: Colors.black54,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'មិនទាន់មានការកំណត់សេវាកម្មនៅឡើយទេ',
-                  style: GoogleFonts.battambang(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
+          // Header with Title and Close button
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'សេវាកម្មរហ័ស',
+                      style: GoogleFonts.battambang(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'អ្នកអាចបន្ថែមសេវាកម្មចំនួន 5 ដែលអ្នកធ្វើប្រតិបត្តិការជាញឹកញាប់',
+                      style: GoogleFonts.battambang(
+                        fontSize: 13,
+                        color: const Color(0xFF64748B),
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.close,
                     color: Colors.black87,
-                    height: 1.5,
+                    size: 18,
                   ),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  'ចុចប៊ូតុង "+" ដើម្បីធ្វើការដាក់បញ្ចូលសេវាកម្មដែលអ្នកធ្វើប្រតិបត្តិការ ញឹកញាប់ សម្រាប់ចូលដំណើរកាសេវាកម្មរហ័ស',
-                  style: GoogleFonts.battambang(
-                    fontSize: 13,
-                    color:  Color.fromARGB(255, 100, 99, 99),
-                    height: 1.55,
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // Scrollable Content
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Section 1: សេវាកម្ម
+                  Text(
+                    'សេវាកម្ម',
+                    style: GoogleFonts.battambang(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  _buildSelectedServicesSection(),
+                  const SizedBox(height: 24),
+
+                  // Section 2: សេវាកម្មផ្សេងៗ
+                  Text(
+                    'សេវាកម្មផ្សេងៗ',
+                    style: GoogleFonts.battambang(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _buildAvailableServicesSection(),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ],
       ),
     );
   }
-}
 
-class _QuickTile extends StatelessWidget {
-  final _QuickServiceItem item;
-  final Color green;
-  final bool showDivider;
-  final bool isFirst;
-  final bool isLast;
-
-  const _QuickTile({
-    required this.item,
-    required this.green,
-    required this.showDivider,
-    required this.isFirst,
-    required this.isLast,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.vertical(
-            top: isFirst ? const Radius.circular(16) : Radius.zero,
-            bottom: isLast ? const Radius.circular(16) : Radius.zero,
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: () {},
-            splashColor: green,
-            highlightColor: green,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+  Widget _buildSelectedServicesSection() {
+    if (_selectedServices.isEmpty) {
+      // Empty state from Screenshot 1
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.02),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE2E8F0),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.open_in_new_rounded,
+                color: Color(0xFF64748B),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 34,
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: green,
-                      shape: BoxShape.circle,
+                  Text(
+                    'មិនទាន់មានការកំណត់សេវាកម្ម\nនៅឡើយទេ',
+                    style: GoogleFonts.battambang(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF1E293B),
+                      height: 1.35,
                     ),
-                    child: const Icon(Icons.add, color: Colors.white, size: 20),
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Text(
-                      item.title,
-                      style: GoogleFonts.battambang(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        height: 1.45,
-                      ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'ចុចប៊ូតុង "+" ដើម្បីធ្វើការដាក់បញ្ចូលសេវាកម្មដែលអ្នកធ្វើប្រតិបត្តិការ ញឹកញាប់ សម្រាប់ចូលដំណើរការសេវាកម្មរហ័ស',
+                    style: GoogleFonts.battambang(
+                      fontSize: 13,
+                      color: const Color(0xFF64748B),
+                      height: 1.45,
                     ),
                   ),
                 ],
               ),
             ),
-          ),
+          ],
         ),
-        if (showDivider)
-          const Divider(
-            height: 1,
-            thickness: 1,
-            indent: 64,
-            color: Color(0xFFF0F0F0),
+      );
+    }
+
+    // Filled state from Screenshot 2
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
-      ],
+        ],
+      ),
+      child: ReorderableListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _selectedServices.length,
+        onReorderItem: (oldIndex, newIndex) {
+          setState(() {
+            final item = _selectedServices.removeAt(oldIndex);
+            _selectedServices.insert(newIndex, item);
+          });
+        },
+        itemBuilder: (context, index) {
+          final service = _selectedServices[index];
+          final isLast = index == _selectedServices.length - 1;
+          return Column(
+            key: ValueKey(service),
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _removeService(service),
+                      child: Container(
+                        width: 26,
+                        height: 26,
+                        decoration: const BoxDecoration(
+                          color: _red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.remove,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Text(
+                        service,
+                        style: GoogleFonts.battambang(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1E293B),
+                          height: 1.35,
+                        ),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.menu_rounded,
+                      color: Color(0xFFCBD5E1),
+                      size: 22,
+                    ),
+                  ],
+                ),
+              ),
+              if (!isLast)
+                const Padding(
+                  padding: EdgeInsets.only(left: 54, right: 16),
+                  child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildAvailableServicesSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: _availableServices.length,
+        separatorBuilder: (_, __) => const Padding(
+          padding: EdgeInsets.only(left: 54, right: 16),
+          child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+        ),
+        itemBuilder: (context, index) {
+          final service = _availableServices[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => _addService(service),
+                  child: Container(
+                    width: 26,
+                    height: 26,
+                    decoration: const BoxDecoration(
+                      color: _green,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    service,
+                    style: GoogleFonts.battambang(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: const Color(0xFF1E293B),
+                      height: 1.35,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

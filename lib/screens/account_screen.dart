@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'dart:math' as math;
-
 import 'package:google_fonts/google_fonts.dart';
 
-// ───────────────────────────────────────────────────────────────
-//  Accounts Screen
-// ───────────────────────────────────────────────────────────────
+import 'account_history_screen.dart';
+import 'open_account_screen.dart';
+
 class AccountsScreen extends StatefulWidget {
   const AccountsScreen({super.key});
+
   @override
   State<AccountsScreen> createState() => _AccountsScreenState();
 }
 
 class _AccountsScreenState extends State<AccountsScreen> {
-  static const _green = Color(0xFF0FA958);
-  static const _lightGray = Color(0xFFF2F2F7);
+  static const Color _green = Color(0xFF0FA958);
+  static const Color _darkHeaderGreen = Color(0xFF085329);
+  static const Color _bgGray = Color(0xFFF2F4F7);
 
   int _selectedTab = 0;
-  final _tabs = ['ទាំងអស់', 'គណនីសន្សំ', 'គណនីបញ្ញើ'];
+  bool _hideBalance = false;
 
-  final _accounts = [
+  final List<String> _tabs = ['ទាំងអស់', 'គណនីសន្សំ', 'គណនីបញ្ញើ'];
+
+  final List<Map<String, dynamic>> _accounts = [
     {
       'title': 'PREMIER ACCOUNT',
       'badge': 'គណនីគោល',
       'number': '10163840',
-      'balance': '0.00 KHR',
+      'balance': '94.24 KHR',
       'hasBadge': true,
+      'isKHR': true,
     },
     {
       'title': 'PREMIER ACCOUNT',
@@ -33,461 +38,41 @@ class _AccountsScreenState extends State<AccountsScreen> {
       'number': '10165272',
       'balance': '0.00 USD',
       'hasBadge': false,
+      'isKHR': false,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _lightGray,
-      body: Column(
-        children: [
-          // ── Green header
-          _GreenHeader(green: _green),
-
-          // ── Scrollable body
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Tab bar
-                  _TabBar(
-                    tabs: _tabs,
-                    selected: _selectedTab,
-                    green: _green,
-                    onTap: (i) => setState(() => _selectedTab = i),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Account cards
-                  ..._accounts.map(
-                    (a) => Padding(
-                      padding: const EdgeInsets.only(bottom: 14),
-                      child: _AccountCard(
-                        title: a['title'] as String,
-                        badge: a['badge'] as String,
-                        accountNumber: a['number'] as String,
-                        balance: a['balance'] as String,
-                        hasBadge: a['hasBadge'] as bool,
-                        green: _green,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-
-      // ── Bottom button
-      bottomNavigationBar: _BottomBar(green: _green),
-    );
-  }
-}
-
-class _GreenHeader extends StatelessWidget {
-  final Color green;
-  const _GreenHeader({required this.green});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: green,
-      child: SafeArea(
+      backgroundColor: _darkHeaderGreen,
+      body: SafeArea(
         bottom: false,
         child: Column(
           children: [
-            // App bar row
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 22,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'គណនី',
-                    style: GoogleFonts.battambang(
-                      color: Colors.white,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // ── Green Header with Summary Card ─────────────────────────────
+            _buildTopHeader(),
 
-            // Summary card
-            Container(
-              margin: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                  bottomLeft: Radius.circular(16),
-                  bottomRight: Radius.circular(16),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  // Balances
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'ទឹកប្រាក់សរុប',
-                          style: GoogleFonts.battambang(
-                            fontSize: 20,
-                            color: Color(0xFF333333),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-                        _BalanceRow(
-                          currency: '៛',
-                          amount: '0.00',
-                          color: green,
-                        ),
-                        const Divider(height: 20, color: Color(0xFFEEEEEE)),
-                        _BalanceRow(
-                          currency: '\$',
-                          amount: '0.00',
-                          color: green,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Circle badge
-                  const SizedBox(width: 16),
-                  _CircleBadge(count: 2, green: green),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 10), // 👉 ចន្លោះ
-            // White rounded bottom of the card bleeds into gray body
-            Container(
-              height: 16,
-              margin: EdgeInsets.only(top: 10),
-              decoration: const BoxDecoration(
-                color: Color(0xFFF2F2F7),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BalanceRow extends StatelessWidget {
-  final String currency;
-  final String amount;
-  final Color color;
-  const _BalanceRow({
-    required this.currency,
-    required this.amount,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 28,
-          height: 28,
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Center(
-            child: Text(
-              currency,
-              style: GoogleFonts.battambang(
-                color: color,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          amount,
-          style: GoogleFonts.battambang(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _CircleBadge extends StatelessWidget {
-  final int count;
-  final Color green;
-  const _CircleBadge({required this.count, required this.green});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CircleArcPainter(color: green),
-      child: SizedBox(
-        width: 80,
-        height: 80,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '$count',
-              style: GoogleFonts.battambang(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
-            ),
-            Text(
-              'គណនី',
-              style: GoogleFonts.battambang(
-                fontSize: 15,
-                color: Colors.black54,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CircleArcPainter extends CustomPainter {
-  final Color color;
-  const _CircleArcPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 4.5
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final rect = Rect.fromLTWH(4, 4, size.width - 8, size.height - 8);
-    // Draw ~300° arc (leave a small gap at bottom-left)
-    canvas.drawArc(rect, math.pi * 0.7, math.pi * 1.6, false, paint);
-  }
-
-  @override
-  bool shouldRepaint(_) => false;
-}
-
-class _TabBar extends StatelessWidget {
-  final List<String> tabs;
-  final int selected;
-  final Color green;
-  final ValueChanged<int> onTap;
-  const _TabBar({
-    required this.tabs,
-    required this.selected,
-    required this.green,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 42,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 222, 218, 218),
-        borderRadius: BorderRadius.circular(50),
-      ),
-      padding: const EdgeInsets.all(4),
-      child: Row(
-        children: List.generate(tabs.length, (i) {
-          final active = i == selected;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => onTap(i),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  color: active ? Colors.white : Colors.transparent,
-                  borderRadius: BorderRadius.circular(50),
-                  boxShadow: active
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : [],
-                ),
-                child: Center(
-                  child: Text(
-                    tabs[i],
-                    style: GoogleFonts.battambang(
-                      fontSize: 18,
-                      fontWeight: active ? FontWeight.w600 : FontWeight.w400,
-                      color: active ? green : const Color(0xFF888888),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
-
-class _AccountCard extends StatelessWidget {
-  final String title;
-  final String badge;
-  final String accountNumber;
-  final String balance;
-  final bool hasBadge;
-  final Color green;
-
-  const _AccountCard({
-    required this.title,
-    required this.badge,
-    required this.accountNumber,
-    required this.balance,
-    required this.hasBadge,
-    required this.green,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Green left accent bar
-            Container(
-              width: 4,
-              decoration: BoxDecoration(
-                color: green,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(14),
-                  bottomLeft: Radius.circular(14),
-                ),
-              ),
-            ),
-
-            // Card content
+            // ── Scrollable Body Area ───────────────────────────────────────
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: _bgGray,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title row
-                    Row(
-                      children: [
-                        Text(
-                          title,
-                          style: GoogleFonts.battambang(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        if (hasBadge) ...[
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: green.withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              badge,
-                              style: GoogleFonts.battambang(
-                                fontSize: 18,
-                                color: green,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                        const Spacer(),
-                        Icon(
-                          Icons.more_horiz,
-                          color: Colors.grey.shade400,
-                          size: 20,
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 6),
-                    Text(
-                      accountNumber,
-                      style: GoogleFonts.battambang(
-                        fontSize: 18,
-                        color: Color(0xFF888888),
-                      ),
-                    ),
-
                     const SizedBox(height: 12),
-                    const Divider(height: 1, color: Color(0xFFEEEEEE)),
+                    // Pill Tab Bar
+                    _buildPillTabBar(),
                     const SizedBox(height: 10),
 
-                    // Balance
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        balance,
-                        style: GoogleFonts.battambang(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
+                    // Tab Content
+                    Expanded(
+                      child: _selectedTab == 2
+                          ? _buildTermDepositEmptyState()
+                          : _buildAccountList(),
                     ),
                   ],
                 ),
@@ -496,41 +81,566 @@ class _AccountCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _BottomBar extends StatelessWidget {
-  final Color green;
-  const _BottomBar({required this.green});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF2F2F7),
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 28),
-      child: SizedBox(
-        width: double.infinity,
-        height: 52,
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: green,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
+      // ── Fixed Bottom Button: បើកគណនី ─────────────────────────────────────
+      bottomNavigationBar: Container(
+        color: _bgGray,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        child: SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const OpenAccountScreen(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _green,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
             ),
-          ),
-          child: Text(
-            'បើកគណនី',
-            style: GoogleFonts.battambang(
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
+            child: Text(
+              'បើកគណនី',
+              style: GoogleFonts.battambang(
+                fontSize: 16.5,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
+  // ── Top Header Widget ────────────────────────────────────────────────────
+  Widget _buildTopHeader() {
+    return Column(
+      children: [
+        // App Bar
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+              ),
+              Text(
+                'គណនី',
+                style: GoogleFonts.battambang(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // Summary Card with Hide Balance Switch & Donut Ring
+        Container(
+          margin: const EdgeInsets.fromLTRB(16, 6, 16, 16),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF053B1D).withValues(alpha: 0.65),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Column(
+            children: [
+              // Hide Balance Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'លាក់ទឹកប្រាក់',
+                    style: GoogleFonts.battambang(
+                      fontSize: 12.5,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Transform.scale(
+                    scale: 0.8,
+                    child: CupertinoSwitch(
+                      value: _hideBalance,
+                      activeTrackColor: _green,
+                      onChanged: (val) {
+                        setState(() => _hideBalance = val);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+
+              // White Card with Donut Chart and Currencies
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    // Donut Chart
+                    SizedBox(
+                      width: 78,
+                      height: 78,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          CustomPaint(
+                            size: const Size(78, 78),
+                            painter: _DonutRingPainter(),
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                '2',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                  height: 1.1,
+                                ),
+                              ),
+                              Text(
+                                'គណនី',
+                                style: GoogleFonts.battambang(
+                                  fontSize: 11,
+                                  color: const Color(0xFF757575),
+                                  height: 1.1,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+
+                    // Currencies (KHR and USD)
+                    Expanded(
+                      child: Column(
+                        children: [
+                          // KHR Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _hideBalance ? '••••••' : '94.24',
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFDFF4E9),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  '៛',
+                                  style: GoogleFonts.battambang(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: _green,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Divider(
+                              height: 1,
+                              color: Color(0xFFEEEEEE),
+                            ),
+                          ),
+                          // USD Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _hideBalance ? '••••••' : '0.00',
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFDFF4E9),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '\$',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: _green,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Pill Tab Bar ─────────────────────────────────────────────────────────
+  Widget _buildPillTabBar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      height: 38,
+      decoration: BoxDecoration(
+        color: const Color(0xFFE5E7EB),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        children: List.generate(_tabs.length, (index) {
+          final isSelected = _selectedTab == index;
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _selectedTab = index),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                margin: const EdgeInsets.all(2.5),
+                decoration: BoxDecoration(
+                  color: isSelected ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
+                          ),
+                        ]
+                      : null,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  _tabs[index],
+                  style: GoogleFonts.battambang(
+                    fontSize: 13,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                    color: isSelected ? _green : const Color(0xFF555555),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  // ── Tab 1 & Tab 2: Account List ──────────────────────────────────────────
+  Widget _buildAccountList() {
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      itemCount: _accounts.length,
+      itemBuilder: (context, index) {
+        final a = _accounts[index];
+        final balanceText = _hideBalance
+            ? (a['isKHR'] ? '•••••• KHR' : '•••••• USD')
+            : (a['balance'] as String);
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => AccountHistoryScreen(
+                  accountNumber: a['number'] as String,
+                  accountName: a['title'] as String,
+                  balance: a['balance'] as String,
+                ),
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Row(
+                children: [
+                  // Green Accent Bar on the left
+                  Container(
+                    width: 4,
+                    height: 90,
+                    color: _green,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(14, 14, 16, 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                a['title'] as String,
+                                style: GoogleFonts.montserrat(
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              if (a['hasBadge'] as bool) ...[
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 3,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFDFF4E9),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    a['badge'] as String,
+                                    style: GoogleFonts.battambang(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: _green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              const Spacer(),
+                              const Icon(
+                                Icons.more_horiz,
+                                color: Colors.black54,
+                                size: 22,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 5),
+                          Text(
+                            a['number'] as String,
+                            style: GoogleFonts.montserrat(
+                              fontSize: 13,
+                              color: const Color(0xFF757575),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Divider(
+                              height: 1,
+                              color: Color(0xFFEEEEEE),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              balanceText,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // ── Tab 3: Empty State for Term Deposit (គណនីបញ្ញើ) ─────────────────────────
+  Widget _buildTermDepositEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 86,
+            height: 86,
+            decoration: BoxDecoration(
+              color: const Color(0xFFDFF4E9),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Center(
+              child: SizedBox(
+                width: 44,
+                height: 52,
+                child: CustomPaint(
+                  painter: _DocumentIconPainter(),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            'មិនទាន់មានគណនី',
+            style: GoogleFonts.battambang(
+              fontSize: 15,
+              color: const Color(0xFF8E8E93),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 60),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Custom Donut Ring Painter ───────────────────────────────────────────────
+class _DonutRingPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = (size.width - 10) / 2;
+
+    final bgPaint = Paint()
+      ..color = const Color(0xFFDFF4E9)
+      ..strokeWidth = 6.5
+      ..style = PaintingStyle.stroke;
+
+    final progressPaint = Paint()
+      ..color = const Color(0xFF0FA958)
+      ..strokeWidth = 6.5
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    // Background circle
+    canvas.drawCircle(center, radius, bgPaint);
+
+    // Active arc (showing ~80% ring)
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      -math.pi / 2,
+      math.pi * 1.7,
+      false,
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ── Custom Folded Document Painter ──────────────────────────────────────────
+class _DocumentIconPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final bodyPaint = Paint()
+      ..color = const Color(0xFF0FA958)
+      ..style = PaintingStyle.fill;
+
+    final foldPaint = Paint()
+      ..color = const Color(0xFF0C8E48)
+      ..style = PaintingStyle.fill;
+
+    final linePaint = Paint()
+      ..color = const Color(0xFF086A34)
+      ..style = PaintingStyle.fill;
+
+    const foldSize = 12.0;
+
+    final bodyPath = Path()
+      ..moveTo(0, 4)
+      ..quadraticBezierTo(0, 0, 4, 0)
+      ..lineTo(size.width - foldSize, 0)
+      ..lineTo(size.width, foldSize)
+      ..lineTo(size.width, size.height - 4)
+      ..quadraticBezierTo(size.width, size.height, size.width - 4, size.height)
+      ..lineTo(4, size.height)
+      ..quadraticBezierTo(0, size.height, 0, size.height - 4)
+      ..close();
+
+    canvas.drawPath(bodyPath, bodyPaint);
+
+    final foldPath = Path()
+      ..moveTo(size.width - foldSize, 0)
+      ..lineTo(size.width, foldSize)
+      ..lineTo(size.width - foldSize, foldSize)
+      ..close();
+
+    canvas.drawPath(foldPath, foldPaint);
+
+    final line1 = RRect.fromRectAndRadius(
+      Rect.fromLTWH(8, 20, size.width - 16, 3),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(line1, linePaint);
+
+    final line2 = RRect.fromRectAndRadius(
+      Rect.fromLTWH(8, 28, size.width - 16, 3),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(line2, linePaint);
+
+    final line3 = RRect.fromRectAndRadius(
+      Rect.fromLTWH(8, 36, size.width - 24, 3),
+      const Radius.circular(2),
+    );
+    canvas.drawRRect(line3, linePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

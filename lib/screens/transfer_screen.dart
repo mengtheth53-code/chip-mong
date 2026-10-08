@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'chip_mong_transfer_screen.dart';
 import 'deposit_screen.dart';
+import 'international_transfer_screen.dart';
+import 'local_transfer_screen.dart';
 import 'myself_transfer_screen.dart';
 
 // ─────────────────────────────────────────────
@@ -328,10 +331,28 @@ class _TransferTile extends StatelessWidget {
                 builder: (_) => const MySelfTransferScreen(),
               ),
             );
+          } else if (item.title == 'ផ្ទេរប្រាក់ទៅគណនី ជីប ម៉ុង ណាមួយ') {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const ChipMongTransferScreen(),
+              ),
+            );
+          } else if (item.title == 'ផ្ទេរប្រាក់ក្នុងស្រុក') {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const LocalTransferScreen(),
+              ),
+            );
           } else if (item.title == 'ដកប្រាក់') {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => const DepositScreen(),
+              ),
+            );
+          } else if (item.title == 'ផ្ទេរប្រាក់ទៅក្រៅប្រទេស') {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const InternationalTransferScreen(),
               ),
             );
           }

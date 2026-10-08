@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:math' as math;
 
+import 'success_screen.dart';
 
 class DepositScreen extends StatefulWidget {
   const DepositScreen({super.key});
@@ -11,12 +11,41 @@ class DepositScreen extends StatefulWidget {
 }
 
 class _DepositScreenState extends State<DepositScreen> {
-  static const _green = Color(0xFF0FA958);
-  static const _bgGray = Color(0xFFF2F2F7);
+  static const Color _darkGreen = Color(0xFF085329);
+  static const Color _green = Color(0xFF0FA958);
+  static const Color _bgGray = Color(0xFFF2F4F7);
 
   bool _isKHR = true;
-  final _amountController = TextEditingController();
-  final _noteController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
+
+  int _selectedAccountIndex = 0;
+  final List<Map<String, dynamic>> _accounts = [
+    {
+      'title': 'PREMIER ACCOUNT',
+      'number': '10163840',
+      'short': '••• 3840',
+      'balance': '94.24 KHR',
+      'hasBadge': true,
+      'isKHR': true,
+    },
+    {
+      'title': 'PREMIER ACCOUNT',
+      'number': '10165272',
+      'short': '••• 5272',
+      'balance': '0.00 USD',
+      'hasBadge': false,
+      'isKHR': false,
+    },
+  ];
+
+  bool get _canProceed => _amountController.text.trim().isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _amountController.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
@@ -27,109 +56,232 @@ class _DepositScreenState extends State<DepositScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedAcc = _accounts[_selectedAccountIndex];
+
     return Scaffold(
-      backgroundColor: _bgGray,
-      body: Column(
-        children: [
-          _GreenHeader(green: _green),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _AccountSelector(green: _green),
-                  const SizedBox(height: 12),
-                  _AmountInput(
-                    green: _green,
-                    isKHR: _isKHR,
-                    controller: _amountController,
-                    onCurrencyToggle: (val) => setState(() => _isKHR = val),
+      backgroundColor: _darkGreen,
+      body: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            // ── Green Header with Title and Cardless Icon ────────────────
+            _buildGreenHeader(context),
+
+            // ── Scrollable Body Area ─────────────────────────────────────
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  color: _bgGray,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // From Account Selector
+                      _buildAccountSelector(selectedAcc),
+                      const SizedBox(height: 12),
+
+                      // Amount Input Card with USD / KHR toggle
+                      _buildAmountInputCard(),
+                      const SizedBox(height: 8),
+
+                      // Range Helper Hint
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Text(
+                          _isKHR
+                              ? 'ចំនួនទឹកប្រាក់ត្រូវតែចាប់ពី20,000 KHR ទៅ 8,000,000 KHR'
+                              : 'ចំនួនទឹកប្រាក់ត្រូវតែចាប់ពី5.00 USD ទៅ 2,000.00 USD',
+                          style: GoogleFonts.battambang(
+                            fontSize: 13,
+                            color: const Color(0xFF64748B),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+
+                      // ATM Banknote Info Banner
+                      _buildInfoBanner(),
+                      const SizedBox(height: 14),
+
+                      // Remark / Note Input
+                      _buildNoteInput(),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  _InfoBanner(),
-                  const SizedBox(height: 12),
-                  _NoteInput(controller: _noteController),
-                ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      // ── Fixed Bottom Button: ដកប្រាក់ ───────────────────────────────────
+      bottomNavigationBar: Container(
+        color: _bgGray,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
+        child: SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: _canProceed
+                ? () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => SuccessScreen(
+                          userName: 'MENG THETH',
+                          accountLabel: 'លេខគណនី',
+                          accountNumber: selectedAcc['number'] as String,
+                          buttonLabel: 'ត្រឡប់ទៅទំព័រដើម',
+                          successLabel: 'បង្កើតលេខកូដដកប្រាក់ជោគជ័យ!',
+                        ),
+                      ),
+                    );
+                  }
+                : null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _green,
+              disabledBackgroundColor: const Color(0xFFD1D5DB),
+              disabledForegroundColor: const Color(0xFF9CA3AF),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+            ),
+            child: Text(
+              'ដកប្រាក់',
+              style: GoogleFonts.battambang(
+                fontSize: 16.5,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-         
+        ),
+      ),
+    );
+  }
+
+  // ── Header ───────────────────────────────────────────────────────────────
+  Widget _buildGreenHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: const Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  'ដកប្រាក់ដោយគ្មានប័ណ្ណ',
+                  style: GoogleFonts.battambang(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF26A9D0),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: const Icon(
+                  Icons.upload_rounded,
+                  color: Colors.white,
+                  size: 26,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
-}
 
-
-class _GreenHeader extends StatelessWidget {
-  final Color green;
-  const _GreenHeader({required this.green});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: green,
-      child: SafeArea(
-        bottom: false,
-        child: Stack(
+  // ── Account Selector Card ─────────────────────────────────────────────────
+  Widget _buildAccountSelector(Map<String, dynamic> acc) {
+    return GestureDetector(
+      onTap: _showAccountPicker,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Positioned.fill(child: CustomPaint(painter: _WatermarkPainter())),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Text(
+              'ពីគណនី',
+              style: GoogleFonts.battambang(
+                fontSize: 12.5,
+                color: const Color(0xFF6B7280),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).maybePop(),
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
-                      size: 22,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+                Expanded(
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Text(
-                          'ដាក់ប្រាក់ដោយគ្មានប័ណ្ណ',
-                          style: GoogleFonts.battambang(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            height: 1.3,
+                      Text(
+                        '${acc['title']} ••• ${acc['short'].toString().replaceAll('••• ', '')}',
+                        style: GoogleFonts.montserrat(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      if (acc['hasBadge'] as bool) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDFF4E9),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            'គណនីគោល',
+                            style: GoogleFonts.battambang(
+                              fontSize: 11,
+                              color: _green,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Container(
-                        width: 46,
-                        height: 46,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF26A9D0),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: const Icon(
-                          Icons.credit_card_off_outlined,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
-                Container(
-                  height: 22,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF2F2F7),
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(22),
-                    ),
-                  ),
+                const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Color(0xFF6B7280),
+                  size: 22,
                 ),
               ],
             ),
@@ -138,51 +290,150 @@ class _GreenHeader extends StatelessWidget {
       ),
     );
   }
-}
 
-
-class _WatermarkPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.08)
-      ..strokeWidth = 1.1
-      ..style = PaintingStyle.stroke;
-    final cx = size.width * 0.82;
-    final topY = size.height * 0.05;
-    final bottomY = size.height * 0.95;
-    for (int i = 0; i < 24; i++) {
-      final t = i / 23;
-      final hw = math.pow(t, 0.7).toDouble() * size.width * 0.28;
-      final y = topY + t * (bottomY - topY);
-      final apexY = y - (1 - t) * 10 - t * 3;
-      final path = Path()
-        ..moveTo(cx - hw, y)
-        ..lineTo(cx, apexY)
-        ..lineTo(cx + hw, y);
-      canvas.drawPath(path, paint);
-    }
+  // ── Account Picker Modal Bottom Sheet ────────────────────────────────────
+  void _showAccountPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'ពីគណនី',
+                  style: GoogleFonts.battambang(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                for (int i = 0; i < _accounts.length; i++) ...[
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedAccountIndex = i;
+                        _isKHR = _accounts[i]['isKHR'] as bool;
+                      });
+                      Navigator.of(ctx).pop();
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: const Color(0xFFE5E7EB)),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 4,
+                              height: 64,
+                              color: _selectedAccountIndex == i
+                                  ? _green
+                                  : Colors.transparent,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 12,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          _accounts[i]['title'] as String,
+                                          style: GoogleFonts.montserrat(
+                                            fontSize: 13.5,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        if (_accounts[i]['hasBadge'] as bool) ...[
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFDFF4E9),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Text(
+                                              'គណនីគោល',
+                                              style: GoogleFonts.battambang(
+                                                fontSize: 10.5,
+                                                fontWeight: FontWeight.bold,
+                                                color: _green,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${_accounts[i]['number']} | ${_accounts[i]['balance']}',
+                                      style: GoogleFonts.montserrat(
+                                        fontSize: 13,
+                                        color: const Color(0xFF6B7280),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 14),
+                              child: Icon(
+                                _selectedAccountIndex == i
+                                    ? Icons.check_circle
+                                    : Icons.radio_button_unchecked,
+                                color: _selectedAccountIndex == i
+                                    ? _green
+                                    : const Color(0xFF9CA3AF),
+                                size: 24,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
-  @override
-  bool shouldRepaint(_) => false;
-}
-
-
-class _AccountSelector extends StatelessWidget {
-  final Color green;
-  const _AccountSelector({required this.green});
-
-  @override
-  Widget build(BuildContext context) {
+  // ── Amount Input Card with Currency Toggle ────────────────────────────────
+  Widget _buildAmountInputCard() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -191,243 +442,101 @@ class _AccountSelector extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'ពីគណនី',
-            style: GoogleFonts.battambang(
-              fontSize: 15,
-              color: const Color(0xFF888888),
-            ),
-          ),
-          const SizedBox(height: 8),
           Row(
             children: [
               Expanded(
+                child: Text(
+                  'ទឹកប្រាក់',
+                  style: GoogleFonts.battambang(
+                    fontSize: 14,
+                    color: const Color(0xFF6B7280),
+                  ),
+                ),
+              ),
+              Container(
+                height: 32,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3F4F6),
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      'PREMIER ACCOUNT ••• 3840',
-                      style: GoogleFonts.roboto(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: green.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        'គណនីគោល',
-                        style: GoogleFonts.battambang(
-                          fontSize: 11,
-                          color: green,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                    _buildCurrencyChip(label: 'USD', active: !_isKHR),
+                    _buildCurrencyChip(label: 'KHR', active: _isKHR),
                   ],
                 ),
               ),
-              Icon(
-                Icons.keyboard_arrow_down,
-                color: Colors.grey.shade500,
-                size: 22,
-              ),
             ],
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _amountController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-
-class _AmountInput extends StatelessWidget {
-  final Color green;
-  final bool isKHR;
-  final TextEditingController controller;
-  final ValueChanged<bool> onCurrencyToggle;
-
-  const _AmountInput({
-    required this.green,
-    required this.isKHR,
-    required this.controller,
-    required this.onCurrencyToggle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ── White card: label + toggle + text field
-        Container(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.04),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Label + currency toggle
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'ទឹកប្រាក់',
-                      style: GoogleFonts.battambang(
-                        fontSize: 15,
-                        color: const Color(0xFF888888),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 34,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF0F0F0),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _CurrencyChip(
-                          label: 'USD',
-                          active: !isKHR,
-                          green: green,
-                          onTap: () => onCurrencyToggle(false),
-                        ),
-                        _CurrencyChip(
-                          label: 'KHR',
-                          active: isKHR,
-                          green: green,
-                          onTap: () => onCurrencyToggle(true),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              // Amount field
-              TextField(
-                controller: controller,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                style: GoogleFonts.battambang(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // ── Range hint OUTSIDE the card, on gray background
-        const SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Text(
-            'ចំនួនទឹកប្រាក់គួរតែចាប់ពី20,000.00 KHR ទៅ 8,000,000.00 KHR',
-            style: GoogleFonts.battambang(
-              fontSize: 14,
-              color: const Color(0xFF999999),
-              height: 1.5,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
-class _CurrencyChip extends StatelessWidget {
-  final String label;
-  final bool active;
-  final Color green;
-  final VoidCallback onTap;
-
-  const _CurrencyChip({
-    required this.label,
-    required this.active,
-    required this.green,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildCurrencyChip({required String label, required bool active}) {
     return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      onTap: () {
+        setState(() => _isKHR = label == 'KHR');
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         decoration: BoxDecoration(
-          color: active ? green : Colors.transparent,
-          borderRadius: BorderRadius.circular(50),
+          color: active ? _green : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
           label,
-          style: GoogleFonts.battambang(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: active ? Colors.white : const Color(0xFF888888),
+          style: TextStyle(
+            fontSize: 12.5,
+            fontWeight: FontWeight.bold,
+            color: active ? Colors.white : const Color(0xFF6B7280),
           ),
         ),
       ),
     );
   }
-}
 
-
-class _InfoBanner extends StatelessWidget {
-  const _InfoBanner();
-
-  @override
-  Widget build(BuildContext context) {
+  // ── Info Banner: ATM Note ────────────────────────────────────────────────
+  Widget _buildInfoBanner() {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF8EC),
+        color: const Color(0xFFFBF6EC),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFFFE0A0), width: 1),
+        border: Border.all(color: const Color(0xFFF3E7C9)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(
             Icons.info_outline_rounded,
-            color: Color(0xFFE6A817),
-            size: 18,
+            color: Color(0xFFD97706),
+            size: 20,
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
-              'ATM ផ្ដល់តែប្រភេទក្រដាស់ប្រាក់ ២០,០០០ រ៉ៀល និង ៥០,០០០ រ៉ៀល ប៉ុណ្ណោះ:',
+              'ATM ផ្តល់តែប្រភេទក្រដាសប្រាក់ ២០,០០០ រៀល និង ៥០,០០០ រៀល ប៉ុណ្ណោះ',
               style: GoogleFonts.battambang(
-                fontSize: 15,
-                color: const Color(0xFF8B6914),
-                height: 1.5,
+                fontSize: 13,
+                color: const Color(0xFF92400E),
+                height: 1.45,
               ),
             ),
           ),
@@ -435,36 +544,30 @@ class _InfoBanner extends StatelessWidget {
       ),
     );
   }
-}
 
-
-class _NoteInput extends StatelessWidget {
-  final TextEditingController controller;
-  const _NoteInput({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
+  // ── Note / Remark Input Card ─────────────────────────────────────────────
+  Widget _buildNoteInput() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
         ],
       ),
       child: TextField(
-        controller: controller,
-        style: GoogleFonts.notoSansKhmer(fontSize: 14, color: Colors.black87),
+        controller: _noteController,
+        style: GoogleFonts.battambang(fontSize: 14, color: Colors.black87),
         decoration: InputDecoration(
           hintText: 'ចំណាំ ( មិនដាក់ក៏បាន )',
           hintStyle: GoogleFonts.battambang(
-            fontSize: 15,
-            color: const Color(0xFFBBBBBB),
+            fontSize: 14,
+            color: const Color(0xFF9CA3AF),
           ),
           border: InputBorder.none,
           isDense: true,
@@ -474,6 +577,3 @@ class _NoteInput extends StatelessWidget {
     );
   }
 }
-
-
-

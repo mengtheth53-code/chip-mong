@@ -33,8 +33,6 @@ class _FillScreenState extends State<FillScreen> {
     super.dispose();
   }
 
-  bool get _canProceed =>
-      _accountController.text.isNotEmpty && _phoneController.text.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'theme/app_theme.dart';
-import 'screens/splash_screen.dart';
+import 'screens/chip_mong_home_screen.dart';
 
 class ChipMongApp extends StatelessWidget {
   const ChipMongApp({super.key});
@@ -13,7 +13,7 @@ class ChipMongApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: buildChipMongTheme(),
       scrollBehavior: const AppScrollBehavior(),
-      home: const SplashScreen(),
+      home: const ChipMongHomeScreen(),
     );
   }
 }

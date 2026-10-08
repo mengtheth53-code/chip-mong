@@ -58,10 +58,10 @@ class AboutAppScreen extends StatelessWidget {
           const SizedBox(height: 24),
           // Title
           const Text(
-            'About app',
+            'Terms and Conditions Mobile Banking Profile',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.w700,
               height: 1.35,
             ),
@@ -191,17 +191,6 @@ class AboutAppScreen extends StatelessWidget {
     return TextSpan(
       text: text,
       style: GoogleFonts.battambang(fontWeight: FontWeight.w700, fontSize: 20),
-    );
-  }
-
-  TextSpan _underlineBold(String text) {
-    return TextSpan(
-      text: text,
-      style: GoogleFonts.battambang(
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
-        decoration: TextDecoration.underline,
-      ),
     );
   }
 }
