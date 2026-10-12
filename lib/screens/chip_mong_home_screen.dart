@@ -32,6 +32,7 @@ import 'smart_credit_screen.dart';
 import 'campus_hub_screen.dart';
 import 'shared_savings_screen.dart';
 import 'daily_auto_savings_screen.dart';
+import 'biometric_auth_screen.dart';
 import 'innovation_hub_screen.dart';
 
 class ChipMongHomeScreen extends StatefulWidget {
@@ -127,6 +128,11 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
       icon: Icons.lightbulb_rounded,
       label: 'នវានុវត្តន៍ទាំង ៥',
       destination: _AppDestination.innovationHub,
+    ),
+    _QuickAction(
+      icon: Icons.fingerprint_rounded,
+      label: 'ជីវមាត្រ Biometric',
+      destination: _AppDestination.biometricAuth,
     ),
     _QuickAction(
       icon: Icons.psychology_rounded,
@@ -292,6 +298,9 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
         break;
       case _AppDestination.innovationHub:
         _openScreen(const InnovationHubScreen());
+        break;
+      case _AppDestination.biometricAuth:
+        _openScreen(const BiometricAuthScreen());
         break;
       case _AppDestination.aiAssistant:
         _openScreen(const AiAssistantScreen());
@@ -720,7 +729,7 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'ដំណោះស្រាយ AI Assistant, ប្រព័ន្ធឥណទានឆ្លាតវៃ, Campus Hub, និងការសន្សំស្វ័យប្រវត្ត',
+                  'ដំណោះស្រាយ Biometrics ចូលប្រើនិងទូទាត់, AI ឥណទាន, Campus Hub, និងការសន្សំស្វ័យប្រវត្ត',
                   style: GoogleFonts.battambang(
                     color: Colors.white.withValues(alpha: 0.85),
                     fontSize: 11.5,
@@ -736,9 +745,9 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                   child: Row(
                     children: [
                       _buildInnovationMiniPill(
-                        icon: Icons.psychology_rounded,
-                        label: 'AI Assistant',
-                        onTap: () => _openScreen(const AiAssistantScreen()),
+                        icon: Icons.fingerprint_rounded,
+                        label: 'Biometrics',
+                        onTap: () => _openScreen(const BiometricAuthScreen()),
                       ),
                       const SizedBox(width: 8),
                       _buildInnovationMiniPill(
@@ -763,6 +772,12 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                         icon: Icons.savings_rounded,
                         label: 'Daily Auto-Save',
                         onTap: () => _openScreen(const DailyAutoSavingsScreen()),
+                      ),
+                      const SizedBox(width: 8),
+                      _buildInnovationMiniPill(
+                        icon: Icons.psychology_rounded,
+                        label: 'AI Assistant',
+                        onTap: () => _openScreen(const AiAssistantScreen()),
                       ),
                     ],
                   ),
@@ -2060,6 +2075,7 @@ enum _AppDestination {
   chequeBook,
   location,
   innovationHub,
+  biometricAuth,
   aiAssistant,
   smartCredit,
   campusHub,

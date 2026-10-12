@@ -11,12 +11,12 @@ class CampusHubScreen extends StatefulWidget {
 
 class _CampusHubScreenState extends State<CampusHubScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  String _selectedUniversity = 'សាកលវិទ្យាល័យភូមិន្ទភ្នំពេញ (RUPP)';
+  String _selectedUniversity = 'សាកលវិទ្យាល័យជាតិគ្រប់គ្រង (NUM)';
 
   final List<String> _universities = [
+    'សាកលវិទ្យាល័យជាតិគ្រប់គ្រង (NUM)',
     'សាកលវិទ្យាល័យភូមិន្ទភ្នំពេញ (RUPP)',
     'វិទ្យាស្ថានបច្ចេកវិទ្យាកម្ពុជា (ITC)',
-    'សាកលវិទ្យាល័យជាតិគ្រប់គ្រង (NUM)',
     'សាកលវិទ្យាល័យ ន័រតុន (Norton)',
   ];
 

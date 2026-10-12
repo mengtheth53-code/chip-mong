@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'password_screen.dart';
+import 'biometric_auth_screen.dart';
 
 class SecuritySettingsScreen extends StatefulWidget {
   const SecuritySettingsScreen({super.key});
@@ -66,6 +67,17 @@ class _SecuritySettingsScreenState extends State<SecuritySettingsScreen> {
             title: 'ទូទាត់ & ផ្ទេរប្រាក់ដោយប្រើ Biometrics',
             value: _biometricTransfer,
             onChanged: (val) => setState(() => _biometricTransfer = val),
+          ),
+          const SizedBox(height: 12),
+          _buildActionCard(
+            icon: Icons.fingerprint_rounded,
+            title: 'សាកល្បង & កំណត់កម្រិត Biometrics (< \$500)',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const BiometricAuthScreen()),
+              );
+            },
           ),
           const SizedBox(height: 12),
           _buildActionCard(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
-import 'ai_assistant_screen.dart';
+import 'biometric_auth_screen.dart';
 import 'smart_credit_screen.dart';
 import 'campus_hub_screen.dart';
 import 'shared_savings_screen.dart';
@@ -166,24 +166,24 @@ class _InnovationHubScreenState extends State<InnovationHubScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Innovation 1: AI Banking Assistant
+            // Innovation 1: Biometric Authentication
             _buildInnovationCard(
               number: '01',
-              icon: Icons.psychology_rounded,
+              icon: Icons.fingerprint_rounded,
               color: const Color(0xFF0FA958),
-              titleKm: 'AI-Powered Banking Assistant\n(ជំនួយការហិរញ្ញវត្ថុឆ្លាតវៃ AI)',
-              titleEn: 'AI-Powered Banking Assistant',
-              conceptKm: 'ប្រព័ន្ធបញ្ញាសិប្បនិម្មិត (AI) បញ្ចូលក្នុង App ដើរតួជា "ទីប្រឹក្សាហិរញ្ញវត្ថុផ្ទាល់ខ្លួន" ជួយអតិថិជនគ្រប់គ្រង និងតាមដានសុខភាពហិរញ្ញវត្ថុ។',
-              conceptEn: 'An embedded AI financial companion designed to assist customers in managing daily personal finances and improving financial literacy.',
-              howKm: '• បែងចែកប្រភេទទិន្នន័យចំណាយស្វ័យប្រវត្ត (Auto-categorization) ដូចជា៖ អាហារ, វិក្កយបត្រ, ការទិញទំនិញ...\n'
-                     '• ផ្ញើការដាស់តឿនឆ្លាតវៃនៅពេលការចាយវាយជិតលើសកញ្ចប់ថវិកាប្រចាំខែ (Budget limit alert)។\n'
-                     '• ផ្តល់ការណែនាំពីវិធីសន្សំប្រាក់ផ្អែកលើទម្លាប់ជាក់ស្តែងរបស់អតិថិជនម្នាក់ៗ។',
-              howEn: '• Automatically categorizes transactions (Food & Dining, Utilities, Shopping).\n'
-                     '• Sends proactive alerts when users approach monthly budget limits.\n'
-                     '• Delivers personalized conversational tips on saving based on spending patterns.',
-              valueKm: 'បង្កើនចំនួនអ្នកចូលប្រើប្រាស់ App ប្រចាំថ្ងៃ (Daily Active Users - DAU) និងធ្វើឱ្យ App ក្លាយជាផ្នែកមួយនៃជីវិតរស់នៅរបស់អតិថិជន (Lifestyle Banking)។',
-              valueEn: 'Significantly boosts Daily Active Users (DAU) and transforms the app from a simple transactional utility into an indispensable lifestyle banking companion.',
-              demoScreen: const AiAssistantScreen(),
+              titleKm: 'Biometric Authentication\n(ការប្រើប្រាស់ក្រយៅដៃ និងផ្ទៃមុខ ដើម្បីចូលប្រើ និងទូទាត់ប្រាក់)',
+              titleEn: 'Biometric Authentication\n(Fingerprint & Face Recognition)',
+              conceptKm: 'ដាក់បញ្ចូលប្រព័ន្ធផ្ទៀងផ្ទាត់ជីវមាត្រកម្រិតខ្ពស់ (Biometric Authentication) ដោយប្រើប្រាស់ ការស្កេនក្រយៅដៃ (Fingerprint) និង ការស្កេនផ្ទៃមុខ (Face Recognition) ទាំងសម្រាប់ការចូលប្រើ App (Quick Login) និងការអនុម័តប្រតិបត្តិការទូទាត់ប្រាក់ (Biometric Transaction Signing)។',
+              conceptEn: 'Advanced Biometric Authentication utilizing Fingerprint and Face Recognition for 1-second Quick Login and frictionless transaction signing under \$500 without PIN or SMS OTP delays.',
+              howKm: '• អតិថិជនបើកដំណើរការមុខងារ Biometrics លើ App ដោយភ្ជាប់ជាមួយប្រព័ន្ធសុវត្ថិភាពទូរស័ព្ទ (Face ID / Touch ID លើ iOS ឬ Biometric API លើ Android)។\n'
+                     '• ចូលប្រើ App ត្រឹមតែ ១ វិនាទី ដោយគ្រាន់តែដាក់មេដៃ ឬស្កេនផ្ទៃមុខ ដោយមិនបាច់ចាំលេខកូដសម្ងាត់។\n'
+                     '• ពេលស្កេនទូទាត់ KHQR ឬផ្ទេរប្រាក់ក្រោម \$500 គ្រាន់តែស្កេនមុខ ឬក្រយៅដៃដើម្បីបញ្ជាក់ភ្លាមៗ ដោយមិនបាច់វាយលេខ PIN ឬរង់ចាំ SMS OTP ឡើយ។',
+              howEn: '• Customers activate Biometrics linked to mobile hardware security (Face ID / Touch ID / Android BiometricPrompt).\n'
+                     '• 1-second instant app login via thumbprint or facial recognition, eliminating forgotten PINs & public shoulder-surfing.\n'
+                     '• Seamless KHQR payment & transfer signing for transactions under \$500 without manual PIN entry or SMS OTP latency.',
+              valueKm: 'បង្កើនសុវត្ថិភាពខ្ពស់បំផុតការពារការលួចចូលប្រើគណនី (Anti-Fraud), កាត់បន្ថយថ្លៃដើមផ្ញើសារ SMS OTP និងផ្តល់បទពិសោធន៍ទូទាត់ប្រាក់រហ័ស ធ្វើឱ្យអតិថិជនចូលចិត្តប្រើប្រាស់ App កាន់តែញឹកញាប់ (DAU)។',
+              valueEn: 'Delivers institutional-grade anti-fraud protection, drastically curtails SMS OTP gateway costs, and provides lightning-fast payments that drive Daily Active Users (DAU).',
+              demoScreen: const BiometricAuthScreen(),
             ),
 
             // Innovation 2: AI & Smart Credit System
