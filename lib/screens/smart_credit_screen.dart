@@ -10,14 +10,28 @@ class SmartCreditScreen extends StatefulWidget {
 }
 
 class _SmartCreditScreenState extends State<SmartCreditScreen> {
-  double _loanAmount = 2500;
-  int _selectedTenure = 12; // months
+  // Mode: 0 for Digital Nano-Loans, 1 for Buy Now Pay Later (BNPL)
+  int _selectedMode = 0;
+
+  // Digital Nano-Loan State ($50 - $1,000 per Proposal 4.2)
+  double _loanAmount = 300;
+  int _selectedTenure = 6; // months
+
+  // BNPL State
+  final String _selectedBnplMerchant = 'Chip Mong Supermarket (ផ្សារទំនើប ជីប ម៉ុង)';
+  double _bnplAmount = 120.00;
+  int _bnplMonths = 3; // 3 months 0% interest
 
   double get _monthlyRepayment {
-    // Interest rate 1.1% per month
-    const monthlyRate = 0.011;
-    final totalInterest = _loanAmount * monthlyRate * _selectedTenure;
-    return (_loanAmount + totalInterest) / _selectedTenure;
+    if (_selectedMode == 0) {
+      // Micro-credit monthly rate 1.1%
+      const monthlyRate = 0.011;
+      final totalInterest = _loanAmount * monthlyRate * _selectedTenure;
+      return (_loanAmount + totalInterest) / _selectedTenure;
+    } else {
+      // 0% interest campaign per Proposal 4.2
+      return _bnplAmount / _bnplMonths;
+    }
   }
 
   void _submitApplication() {
@@ -45,24 +59,29 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'សំណើត្រូវបានបញ្ជូនដោយជោគជ័យ!',
+              _selectedMode == 0
+                  ? 'សំណើកម្ចីខ្នាតតូចត្រូវបានបញ្ជូន!'
+                  : 'សំណើបង់រំលស់ BNPL 0% ត្រូវបានអនុម័ត!',
+              textAlign: TextAlign.center,
               style: GoogleFonts.battambang(
-                fontSize: 18,
+                fontSize: 17.5,
                 fontWeight: FontWeight.w700,
                 color: const Color(0xFF1F2937),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'ពិន្ទុ AI របស់អ្នកបានឆ្លងកាត់ការវាយតម្លៃបឋម (Pre-Approved \$${_loanAmount.toInt()})។ របាយការណ៍ត្រូវបានបញ្ជូនទៅកាន់មន្ត្រីឥណទានធនាគារ ជីប ម៉ុង ដើម្បីពិនិត្យអនុម័តផ្លូវការចុងក្រោយ (Human-in-the-loop Verification) ក្នុងរយៈពេល 15 នាទី។',
+              _selectedMode == 0
+                  ? 'ពិន្ទុ Alternative Credit របស់អ្នកបានឆ្លងកាត់ការវាយតម្លៃបឋម (Pre-Approved \$${_loanAmount.toInt()}) ដោយមិនបាច់មានទ្រព្យបញ្ចាំ។ ទិន្នន័យត្រូវបានបញ្ជូនទៅកាន់មន្ត្រីឥណទានដើម្បីត្រួតពិនិត្យអនុម័តផ្លូវការ (Human-in-the-loop) តាមបទប្បញ្ញត្តិ NBC។'
+                  : 'ការបង់រំលស់ BNPL \$${_bnplAmount.toStringAsFixed(0)} ជាមួយការប្រាក់ 0% ត្រូវបានភ្ជាប់ជាមួយ $_selectedBnplMerchant ដោយជោគជ័យ។',
               textAlign: TextAlign.center,
               style: GoogleFonts.battambang(
-                fontSize: 13,
+                fontSize: 12.5,
                 color: const Color(0xFF4B5563),
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 22),
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -104,23 +123,23 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.psychology_alt_rounded, color: Color(0xFF34D399), size: 18),
+                const Icon(Icons.bolt_rounded, color: Color(0xFFFBBF24), size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  'ប្រព័ន្ធវាយតម្លៃឥណទានឆ្លាតវៃ',
+                  'AI & Smart Credit System',
                   style: GoogleFonts.battambang(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 17,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
             ),
             Text(
-              'AI & Smart Credit System',
+              'Alternative Credit Scoring • Proposal 4.2',
               style: GoogleFonts.roboto(
                 color: Colors.white70,
-                fontSize: 11,
+                fontSize: 10.5,
               ),
             ),
           ],
@@ -131,7 +150,7 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // AI Credit Score Card
+            // AI Alternative Credit Score Card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -157,12 +176,32 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'ពិន្ទុឥណទាន AI របស់អ្នក',
-                            style: GoogleFonts.battambang(
-                              color: Colors.white70,
-                              fontSize: 13,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                'ពិន្ទុ Alternative Credit',
+                                style: GoogleFonts.battambang(
+                                  color: Colors.white70,
+                                  fontSize: 12.5,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFFBBF24).withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  'Thin-File CBC',
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 9.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: const Color(0xFFFDE68A),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 4),
                           Row(
@@ -173,7 +212,7 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
                                 '785',
                                 style: GoogleFonts.roboto(
                                   color: Colors.white,
-                                  fontSize: 42,
+                                  fontSize: 40,
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),
@@ -182,7 +221,7 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
                                 '/ 850',
                                 style: GoogleFonts.roboto(
                                   color: Colors.white54,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -191,24 +230,24 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
                         ],
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: const Color(0xFF10B981).withValues(alpha: 0.3),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: const Color(0xFF34D399), width: 1.2),
                         ),
                         child: Text(
-                          'ល្អប្រសើរណាស់ (Excellent)',
+                          'គុណភាពខ្ពស់ (Eligible)',
                           style: GoogleFonts.battambang(
                             color: const Color(0xFFD1FAE5),
-                            fontSize: 12.5,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -221,10 +260,10 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            'អនុម័តបឋមភ្លាមៗក្នុង 3 នាទី (Pre-Approved Limit: \$5,000)',
+                            'ដំណោះស្រាយសម្រាប់ Thin-file Customers (និស្សិត និងអាជីវករខ្នាតតូច)',
                             style: GoogleFonts.battambang(
                               color: Colors.white,
-                              fontSize: 12.5,
+                              fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -235,13 +274,71 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+
+            // Mode Selector: Nano-Loans vs BNPL (Proposal 4.2)
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedMode = 0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedMode == 0 ? AppColors.primaryGreen : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _selectedMode == 0 ? AppColors.primaryGreen : Colors.grey.shade300,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Digital Nano-Loans (\$50-\$1k)',
+                          style: GoogleFonts.battambang(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.bold,
+                            color: _selectedMode == 0 ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedMode = 1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        color: _selectedMode == 1 ? AppColors.primaryGreen : Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _selectedMode == 1 ? AppColors.primaryGreen : Colors.grey.shade300,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Buy Now Pay Later (BNPL 0%)',
+                          style: GoogleFonts.battambang(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.bold,
+                            color: _selectedMode == 1 ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 18),
 
             // Cash Flow Analysis Metrics
             Text(
-              'ការវិភាគលំហូរសាច់ប្រាក់ (Cash Flow Health)',
+              'ទិន្នន័យវាយតម្លៃលំហូរសាច់ប្រាក់ (Consented Cash Flow)',
               style: GoogleFonts.battambang(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: Colors.black87,
               ),
@@ -251,18 +348,18 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
               children: [
                 Expanded(
                   child: _buildMetricTile(
-                    label: 'ស្ថេរភាពចំណូល',
-                    value: '96%',
-                    subtext: 'ចំណូលទៀងទាត់',
+                    label: 'ចំណូល KHQR ចូល',
+                    value: '+\$980',
+                    subtext: 'មធ្យមប្រចាំខែ',
                     color: const Color(0xFF10B981),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: _buildMetricTile(
-                    label: 'លំហូរសាច់ប្រាក់សុទ្ធ',
-                    value: '+\$1,250',
-                    subtext: 'ប្រចាំខែ',
+                    label: 'ស្ថេរភាពសាច់ប្រាក់',
+                    value: '94%',
+                    subtext: 'មានស្ថេរភាពល្អ',
                     color: const Color(0xFF3B82F6),
                   ),
                 ),
@@ -273,18 +370,18 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
               children: [
                 Expanded(
                   child: _buildMetricTile(
-                    label: 'សមាមាត្របំណុល DTI',
-                    value: '18%',
-                    subtext: 'កម្រិតសុវត្ថិភាពខ្ពស់',
+                    label: 'ប្រវត្តិបង់វិក្កយបត្រ',
+                    value: '100%',
+                    subtext: 'ទាន់ពេល 12 ខែ',
                     color: const Color(0xFF10B981),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: _buildMetricTile(
-                    label: 'ប្រវត្តិទូទាត់ទាន់ពេល',
-                    value: '100%',
-                    subtext: 'គ្មានប្រវត្តិយឺតយ៉ាវ',
+                    label: 'កម្រិតសមាមាត្រ DTI',
+                    value: '15%',
+                    subtext: 'ហានិភ័យទាបបំផុត',
                     color: const Color(0xFF8B5CF6),
                   ),
                 ),
@@ -292,7 +389,7 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Interactive Loan Simulator
+            // Interactive Simulator
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
@@ -306,88 +403,11 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
                   ),
                 ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'គណនាឥណទានរហ័ស (Quick Loan Simulator)',
-                    style: GoogleFonts.battambang(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('ទំហំកម្ចីដែលចង់ស្នើសុំ', style: GoogleFonts.battambang(fontSize: 13, color: Colors.grey.shade700)),
-                      Text(
-                        '\$${_loanAmount.toInt()}',
-                        style: GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF0FA958)),
-                      ),
-                    ],
-                  ),
-                  Slider(
-                    value: _loanAmount,
-                    min: 500,
-                    max: 5000,
-                    divisions: 45,
-                    activeColor: const Color(0xFF0FA958),
-                    onChanged: (val) => setState(() => _loanAmount = val),
-                  ),
-                  const SizedBox(height: 10),
-                  Text('រយៈពេលសង (Tenure)', style: GoogleFonts.battambang(fontSize: 13, color: Colors.grey.shade700)),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [6, 12, 24].map((tenure) {
-                      final isSelected = _selectedTenure == tenure;
-                      return Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => _selectedTenure = tenure),
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFF0FA958) : const Color(0xFFF1F5F9),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '$tenure ខែ',
-                                style: GoogleFonts.battambang(
-                                  color: isSelected ? Colors.white : Colors.black87,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                  const Divider(height: 28),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('ប្រាក់ត្រូវសងប្រចាំខែប៉ាន់ស្មាន', style: GoogleFonts.battambang(fontSize: 13, color: Colors.black87)),
-                      Text(
-                        '\$${_monthlyRepayment.toStringAsFixed(2)} / ខែ',
-                        style: GoogleFonts.roboto(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFF065F46),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              child: _selectedMode == 0 ? _buildNanoLoanSimulator() : _buildBnplSimulator(),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            // Human-in-the-loop compliance reassurance card
+            // Governance & Responsible Lending Reassurance Card
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -397,48 +417,246 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.verified_user_rounded, color: Color(0xFF2563EB), size: 24),
+                  const Icon(Icons.gavel_rounded, color: Color(0xFF2563EB), size: 24),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'ប្រព័ន្ធដំណើរការដោយរក្សាការត្រួតពិនិត្យចុងក្រោយដោយមនុស្ស (Human-in-the-loop) ដើម្បីធានាសុវត្ថិភាព និងការអនុលោមតាមបទប្បញ្ញត្តិរបស់ធនាគារជាតិនៃកម្ពុជា។',
+                      'អភិបាលកិច្ច & Responsible Lending៖ ការផ្តល់កម្ចីស្ថិតក្រោមការត្រួតពិនិត្យដោយមនុស្ស (Human-in-the-loop), AI Explainability, និងអនុលោមតាមបទប្បញ្ញត្តិធនាគារជាតិនៃកម្ពុជា (NBC)។',
                       style: GoogleFonts.battambang(
-                        fontSize: 12,
+                        fontSize: 11.5,
                         color: const Color(0xFF1E40AF),
-                        height: 1.4,
+                        height: 1.45,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
             // Apply Button
             SizedBox(
               width: double.infinity,
-              height: 52,
+              height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0FA958),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   elevation: 2,
                 ),
                 onPressed: _submitApplication,
                 child: Text(
-                  'ស្នើសុំឥណទានភ្លាមៗ (Instant Apply)',
+                  _selectedMode == 0
+                      ? 'ស្នើសុំ Digital Nano-Loan ភ្លាមៗ (គ្មានទ្រព្យបញ្ចាំ)'
+                      : 'ស្នើសុំបង់រំលស់ BNPL 0% ភ្លាមៗ',
                   style: GoogleFonts.battambang(
-                    fontSize: 16,
+                    fontSize: 14.5,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNanoLoanSimulator() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Digital Nano-Loan (សំណើ ៤.២)', style: GoogleFonts.battambang(fontSize: 14, fontWeight: FontWeight.bold)),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: const Color(0xFFD1FAE5),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text('គ្មានទ្រព្យបញ្ចាំ', style: GoogleFonts.battambang(fontSize: 11, color: const Color(0xFF065F46), fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('ទំហំកម្ចីស្នើសុំ (\$50 - \$1,000)', style: GoogleFonts.battambang(fontSize: 12.5, color: Colors.grey.shade700)),
+            Text(
+              '\$${_loanAmount.toInt()}',
+              style: GoogleFonts.roboto(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF0FA958)),
+            ),
+          ],
+        ),
+        Slider(
+          value: _loanAmount,
+          min: 50,
+          max: 1000,
+          divisions: 19,
+          activeColor: const Color(0xFF0FA958),
+          onChanged: (val) => setState(() => _loanAmount = val),
+        ),
+        const SizedBox(height: 8),
+        Text('រយៈពេលសង (Tenure)', style: GoogleFonts.battambang(fontSize: 12.5, color: Colors.grey.shade700)),
+        const SizedBox(height: 8),
+        Row(
+          children: [3, 6, 12].map((tenure) {
+            final isSelected = _selectedTenure == tenure;
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() => _selectedTenure = tenure),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF0FA958) : const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$tenure ខែ',
+                      style: GoogleFonts.battambang(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const Divider(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('ប្រាក់ត្រូវសងប្រចាំខែប៉ាន់ស្មាន', style: GoogleFonts.battambang(fontSize: 12.5, color: Colors.black87)),
+            Text(
+              '\$${_monthlyRepayment.toStringAsFixed(2)} / ខែ',
+              style: GoogleFonts.roboto(
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF065F46),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBnplSimulator() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Buy Now Pay Later (BNPL 0%)', style: GoogleFonts.battambang(fontSize: 14, fontWeight: FontWeight.bold)),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF3C7),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text('ការប្រាក់ 0%', style: GoogleFonts.battambang(fontSize: 11, color: const Color(0xFFB45309), fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Text('ដៃគូពាណិជ្ជករក្នុងបណ្តាញ Chip Mong:', style: GoogleFonts.battambang(fontSize: 12, color: Colors.grey.shade700)),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.storefront_rounded, size: 18, color: Color(0xFF0F172A)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _selectedBnplMerchant,
+                  style: GoogleFonts.battambang(fontSize: 12, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('តម្លៃទំនិញបង់រំលស់', style: GoogleFonts.battambang(fontSize: 12.5, color: Colors.grey.shade700)),
+            Text(
+              '\$${_bnplAmount.toStringAsFixed(0)}',
+              style: GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF0FA958)),
+            ),
+          ],
+        ),
+        Slider(
+          value: _bnplAmount,
+          min: 30,
+          max: 300,
+          divisions: 9,
+          activeColor: const Color(0xFF0FA958),
+          onChanged: (val) => setState(() => _bnplAmount = val),
+        ),
+        const SizedBox(height: 8),
+        Text('ដំណាក់កាលបង់រំលស់ (0% Interest)', style: GoogleFonts.battambang(fontSize: 12.5, color: Colors.grey.shade700)),
+        const SizedBox(height: 8),
+        Row(
+          children: [3, 6].map((months) {
+            final isSelected = _bnplMonths == months;
+            return Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() => _bnplMonths = months),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF0FA958) : const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$months ខែ (0% APR)',
+                      style: GoogleFonts.battambang(
+                        color: isSelected ? Colors.white : Colors.black87,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const Divider(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('បង់ប្រចាំខែ (គ្មានការប្រាក់)', style: GoogleFonts.battambang(fontSize: 12.5, color: Colors.black87)),
+            Text(
+              '\$${_monthlyRepayment.toStringAsFixed(2)} / ខែ',
+              style: GoogleFonts.roboto(
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF065F46),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -464,11 +682,11 @@ class _SmartCreditScreenState extends State<SmartCreditScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: GoogleFonts.battambang(fontSize: 12, color: Colors.grey.shade600)),
+          Text(label, style: GoogleFonts.battambang(fontSize: 11.5, color: Colors.grey.shade600)),
           const SizedBox(height: 4),
-          Text(value, style: GoogleFonts.roboto(fontSize: 18, fontWeight: FontWeight.w800, color: color)),
+          Text(value, style: GoogleFonts.roboto(fontSize: 17, fontWeight: FontWeight.w800, color: color)),
           const SizedBox(height: 2),
-          Text(subtext, style: GoogleFonts.battambang(fontSize: 11, color: Colors.grey.shade500)),
+          Text(subtext, style: GoogleFonts.battambang(fontSize: 10.5, color: Colors.grey.shade500)),
         ],
       ),
     );

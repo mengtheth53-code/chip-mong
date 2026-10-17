@@ -18,14 +18,15 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
   bool _isScanning = false;
   bool _scanSuccess = false;
   String _selectedBiometricType = 'fingerprint'; // 'fingerprint' or 'face'
-  double _quickPayLimit = 500.0;
+  double _quickPayLimit = 10.0; // Pilot limit under $10 per Section 4.1 proposal
   bool _enableBiometricLogin = true;
   bool _enableBiometricPay = true;
+  bool _enableLivenessDetection = true; // Face Liveness Detection per Section 4.1
 
   // Quick Pay simulator state
-  double _selectedPayAmount = 24.50;
-  String _selectedMerchant = 'Chip Mong Supermarket (ផ្សារទំនើប ជីប ម៉ុង)';
-  String _selectedItemName = 'Grocery Express & Snacks';
+  double _selectedPayAmount = 1.50; // $1.50 coffee per Section 4.1 proposal
+  String _selectedMerchant = 'Brown Coffee (កាហ្វេប្រចាំថ្ងៃ)';
+  String _selectedItemName = 'Iced Latte & Croissant';
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
       _scanSuccess = false;
     });
 
-    Future.delayed(const Duration(milliseconds: 900), () {
+    Future.delayed(const Duration(milliseconds: 850), () {
       if (!mounted) return;
       setState(() {
         _isScanning = false;
@@ -65,8 +66,8 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               Expanded(
                 child: Text(
                   _isKhmer
-                      ? 'ផ្ទៀងផ្ទាត់ជីវមាត្រជោគជ័យក្នុងរយៈពេល 0.78 វិនាទី!'
-                      : 'Biometric Authenticated Successfully in 0.78s!',
+                      ? 'ផ្ទៀងផ្ទាត់ជោគជ័យក្នុងរយៈពេល 0.78 វិនាទី! (FIDO2 On-Device)'
+                      : 'Authenticated Successfully in 0.78s! (FIDO2 On-Device)',
                   style: GoogleFonts.battambang(fontSize: 13, color: Colors.white),
                 ),
               ),
@@ -123,15 +124,19 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          isEligible ? Icons.bolt_rounded : Icons.lock_outline_rounded,
+                          isEligible ? Icons.flash_on_rounded : Icons.shield_rounded,
                           size: 16,
                           color: isEligible ? const Color(0xFF047857) : const Color(0xFFB45309),
                         ),
                         const SizedBox(width: 6),
                         Text(
                           isEligible
-                              ? (_isKhmer ? 'ទូទាត់រហ័ស Biometrics (< \$500)' : 'Biometric Quick Pay (< \$500)')
-                              : (_isKhmer ? 'ទំហំលើស \$500 (ត្រូវការ PIN/OTP)' : 'Over \$500 Limit (Requires PIN/OTP)'),
+                              ? (_isKhmer
+                                  ? 'One-Touch QuickPay (< \$${_quickPayLimit.toInt()})'
+                                  : 'One-Touch QuickPay (< \$${_quickPayLimit.toInt()})')
+                              : (_isKhmer
+                                  ? 'Biometric Step-Up (> \$${_quickPayLimit.toInt()})'
+                                  : 'Biometric Step-Up Security (> \$${_quickPayLimit.toInt()})'),
                           style: GoogleFonts.battambang(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -169,7 +174,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                     style: GoogleFonts.roboto(
                       fontSize: 34,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.primaryGreen,
+                      color: isEligible ? AppColors.primaryGreen : const Color(0xFFB45309),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -180,13 +185,13 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                       onTap: () {
                         if (localScanning || localSuccess) return;
                         setSheetState(() => localScanning = true);
-                        Future.delayed(const Duration(milliseconds: 800), () {
+                        Future.delayed(const Duration(milliseconds: 750), () {
                           if (!context.mounted) return;
                           setSheetState(() {
                             localScanning = false;
                             localSuccess = true;
                           });
-                          Future.delayed(const Duration(milliseconds: 700), () {
+                          Future.delayed(const Duration(milliseconds: 650), () {
                             if (!context.mounted) return;
                             Navigator.pop(ctx);
                             _showReceiptDialog();
@@ -204,15 +209,22 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                             color: localSuccess
                                 ? const Color(0xFF10B981)
                                 : const Color(0xFF34D399),
-                            width: 2,
+                            width: 2.2,
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF10B981).withValues(alpha: 0.2),
+                              blurRadius: 16,
+                              spreadRadius: 2,
+                            ),
+                          ],
                         ),
                         child: localScanning
                             ? const SizedBox(
-                                width: 50,
-                                height: 50,
+                                width: 54,
+                                height: 54,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 3,
+                                  strokeWidth: 3.5,
                                   color: Color(0xFF059669),
                                 ),
                               )
@@ -234,10 +246,10 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                       localSuccess
                           ? (_isKhmer ? '✅ ផ្ទៀងផ្ទាត់ជោគជ័យ! កំពុងចេញបង្កាន់ដៃ...' : '✅ Verified! Issuing receipt...')
                           : localScanning
-                              ? (_isKhmer ? 'កំពុងស្កេនជីវមាត្រ...' : 'Scanning Biometric...')
+                              ? (_isKhmer ? 'កំពុងផ្ទៀងផ្ទាត់ជីវមាត្រ...' : 'Verifying Biometrics...')
                               : (_isKhmer
-                                  ? 'ចុចលើរូបក្រយៅដៃដើម្បីអនុម័ត (គ្មាន PIN / OTP)'
-                                  : 'Tap sensor icon to sign transaction (No PIN / OTP)'),
+                                  ? 'ចុចលើរូបដើម្បីអនុម័ត One-Touch QuickPay (គ្មាន PIN)'
+                                  : 'Tap sensor icon to sign One-Touch QuickPay (No PIN)'),
                       textAlign: TextAlign.center,
                       style: GoogleFonts.battambang(
                         fontSize: 13,
@@ -245,11 +257,11 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                         color: localSuccess ? const Color(0xFF047857) : const Color(0xFF334155),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
                       _isKhmer
-                          ? 'ប្រតិបត្តិការត្រូវបានចុះហត្ថលេខាឌីជីថលដោយ Secure Enclave របស់ទូរស័ព្ទ'
-                          : 'Cryptographically signed via device hardware Secure Enclave',
+                          ? 'ដំណើរការលើឧបករណ៍ (FIDO2 / Secure Enclave) មិនបញ្ជូនរូប Biometric ទៅ Server'
+                          : 'Processed locally via FIDO2 / Secure Enclave (Zero raw biometrics sent to server)',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.battambang(
                         fontSize: 11,
@@ -257,39 +269,39 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                       ),
                     ),
                   ] else ...[
-                    // Over limit warning
+                    // Step-up Security required
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFEF2F2),
+                        color: const Color(0xFFFEF3C7),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFFECACA)),
+                        border: Border.all(color: const Color(0xFFFDE68A)),
                       ),
                       child: Column(
                         children: [
-                          const Icon(Icons.shield_outlined, color: Color(0xFFDC2626), size: 32),
+                          const Icon(Icons.security_update_warning_rounded, color: Color(0xFFB45309), size: 30),
                           const SizedBox(height: 8),
                           Text(
                             _isKhmer
-                                ? 'ទឹកប្រាក់លើស \$500 ត្រូវផ្ទៀងផ្ទាត់ដោយលេខ PIN ៦ ខ្ទង់ និងសារ SMS OTP ដើម្បីធានាសុវត្ថិភាពខ្ពស់បំផុត។'
-                                : 'Amounts exceeding \$500 require standard 6-digit PIN and SMS OTP verification for heightened security.',
+                                ? 'គោលការណ៍ Biometric Step-Up Security៖ ដោយសារទឹកប្រាក់លើស \$${_quickPayLimit.toInt()} ឬមានហានិភ័យខ្ពស់ ប្រព័ន្ធទាមទារការផ្ទៀងផ្ទាត់បន្ថែម (PIN ៦ ខ្ទង់ ឬ SMS OTP) ដើម្បីសុវត្ថិភាពអតិបរមា។'
+                                : 'Biometric Step-Up Security: Transactions exceeding \$${_quickPayLimit.toInt()} or flagged as high risk require secondary verification (6-digit PIN or SMS OTP) per bank security policy.',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.battambang(
-                              fontSize: 12.5,
-                              color: const Color(0xFF991B1B),
-                              height: 1.4,
+                              fontSize: 12,
+                              color: const Color(0xFF92400E),
+                              height: 1.45,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0F172A),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding: const EdgeInsets.symmetric(vertical: 13),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         ),
                         onPressed: () {
@@ -298,19 +310,19 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                             SnackBar(
                               content: Text(
                                 _isKhmer
-                                    ? 'ប្តូរទៅកាន់ផ្ទាំងវាយ PIN & SMS OTP ធម្មតា'
-                                    : 'Redirected to standard PIN & SMS OTP flow',
+                                    ? 'ប្តូរទៅកាន់ផ្ទាំង Step-Up PIN & SMS OTP ជោគជ័យ'
+                                    : 'Proceeding with Step-Up PIN & SMS OTP verification',
                                 style: GoogleFonts.battambang(),
                               ),
                             ),
                           );
                         },
-                        icon: const Icon(Icons.pin, color: Colors.white, size: 20),
+                        icon: const Icon(Icons.password_rounded, color: Colors.white, size: 20),
                         label: Text(
-                          _isKhmer ? 'វាយលេខ PIN & ទទួល SMS OTP' : 'Enter 6-Digit PIN & SMS OTP',
+                          _isKhmer ? 'ផ្ទៀងផ្ទាត់ដោយ PIN & SMS OTP' : 'Verify with PIN & SMS OTP',
                           style: GoogleFonts.battambang(
                             color: Colors.white,
-                            fontSize: 14,
+                            fontSize: 13.5,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -355,7 +367,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               ),
               const SizedBox(height: 6),
               Text(
-                _isKhmer ? 'អនុម័តដោយការស្កេនជីវមាត្ររហ័ស' : 'Approved via Biometric Instant Signing',
+                _isKhmer ? 'អនុម័តដោយ One-Touch QuickPay (FIDO2)' : 'Approved via One-Touch QuickPay (FIDO2)',
                 style: GoogleFonts.battambang(
                   fontSize: 12,
                   color: const Color(0xFF64748B),
@@ -372,14 +384,14 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                 child: Column(
                   children: [
                     _buildReceiptRow(_isKhmer ? 'អ្នកទទួល' : 'Merchant', _selectedMerchant),
-                    const Divider(height: 18),
+                    const Divider(height: 16),
                     _buildReceiptRow(_isKhmer ? 'ទឹកប្រាក់' : 'Amount', '\$${_selectedPayAmount.toStringAsFixed(2)}'),
-                    const Divider(height: 18),
-                    _buildReceiptRow(_isKhmer ? 'វិធីផ្ទៀងផ្ទាត់' : 'Auth Method', 'Biometric ($_selectedBiometricType)'),
-                    const Divider(height: 18),
-                    _buildReceiptRow(_isKhmer ? 'រយៈពេល' : 'Signing Time', '0.78s (Instant)'),
-                    const Divider(height: 18),
-                    _buildReceiptRow(_isKhmer ? 'ថ្លៃដើម SMS' : 'SMS Cost', '\$0.00 (Saved \$0.03)'),
+                    const Divider(height: 16),
+                    _buildReceiptRow(_isKhmer ? 'វិធីផ្ទៀងផ្ទាត់' : 'Auth Protocol', 'FIDO2 / ${_selectedBiometricType.toUpperCase()}'),
+                    const Divider(height: 16),
+                    _buildReceiptRow(_isKhmer ? 'រយៈពេលប្រតិបត្តិការ' : 'Turnaround Time', '0.78 វិនាទី (Instant)'),
+                    const Divider(height: 16),
+                    _buildReceiptRow(_isKhmer ? 'សុវត្ថិភាព' : 'Security', 'On-Device Secure Enclave'),
                   ],
                 ),
               ),
@@ -457,7 +469,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                 const Icon(Icons.fingerprint_rounded, color: Color(0xFF34D399), size: 20),
                 const SizedBox(width: 8),
                 Text(
-                  _isKhmer ? 'ការផ្ទៀងផ្ទាត់ជីវមាត្រ' : 'Biometric Authentication',
+                  _isKhmer ? 'One-Touch QuickPay' : 'One-Touch QuickPay',
                   style: GoogleFonts.battambang(
                     color: Colors.white,
                     fontSize: 17,
@@ -467,7 +479,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               ],
             ),
             Text(
-              'Innovation 01 • Fingerprint & Face Recognition',
+              'Biometric Authentication • Proposal 4.1',
               style: GoogleFonts.roboto(
                 color: Colors.white70,
                 fontSize: 10.5,
@@ -513,11 +525,11 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
           indicatorWeight: 3,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
-          labelStyle: GoogleFonts.battambang(fontSize: 12.5, fontWeight: FontWeight.bold),
+          labelStyle: GoogleFonts.battambang(fontSize: 12, fontWeight: FontWeight.bold),
           tabs: [
             Tab(text: _isKhmer ? 'ចូលប្រើ ១ វិនាទី' : 'Quick Login'),
-            Tab(text: _isKhmer ? 'ទូទាត់ < \$500' : 'Quick Pay < \$500'),
-            Tab(text: _isKhmer ? 'ការកំណត់ & សុវត្ថិភាព' : 'Security & Settings'),
+            Tab(text: _isKhmer ? 'One-Touch QuickPay' : 'One-Touch Pay'),
+            Tab(text: _isKhmer ? 'FIDO2 & Step-Up' : 'Security & KPIs'),
           ],
         ),
       ),
@@ -526,7 +538,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
         children: [
           _buildQuickLoginTab(),
           _buildQuickPayTab(),
-          _buildSettingsTab(),
+          _buildSecurityAndKpiTab(),
         ],
       ),
     );
@@ -581,7 +593,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
           // Selector: Face ID vs Fingerprint
           Row(
@@ -657,7 +669,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          _isKhmer ? 'ផ្ទៃមុខ (Face ID)' : 'Face Recognition',
+                          _isKhmer ? 'ផ្ទៃមុខ (Face ID)' : 'Face ID',
                           style: GoogleFonts.battambang(
                             fontSize: 12.5,
                             fontWeight: FontWeight.bold,
@@ -671,11 +683,11 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
 
           // Central Scanner Simulator
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(22),
@@ -692,8 +704,8 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                 GestureDetector(
                   onTap: _simulateLoginScan,
                   child: Container(
-                    width: 120,
-                    height: 120,
+                    width: 110,
+                    height: 110,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
@@ -712,15 +724,15 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                                       : const Color(0xFF047857))
                               .withValues(alpha: 0.35),
                           blurRadius: 18,
-                          spreadRadius: 4,
+                          spreadRadius: 3,
                         ),
                       ],
                     ),
                     child: Center(
                       child: _isScanning
                           ? const SizedBox(
-                              width: 50,
-                              height: 50,
+                              width: 48,
+                              height: 48,
                               child: CircularProgressIndicator(
                                 color: Colors.white,
                                 strokeWidth: 3.5,
@@ -732,23 +744,23 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                                   : (_selectedBiometricType == 'fingerprint'
                                       ? Icons.fingerprint_rounded
                                       : Icons.face_retouching_natural_rounded),
-                              size: 64,
+                              size: 58,
                               color: Colors.white,
                             ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 16),
                 Text(
                   _scanSuccess
                       ? (_isKhmer ? 'ផ្ទៀងផ្ទាត់ជោគជ័យ! (0.78 វិនាទី)' : 'Authenticated Successfully! (0.78s)')
                       : _isScanning
-                          ? (_isKhmer ? 'កំពុងស្កេនជីវមាត្រ...' : 'Scanning Hardware Sensor...')
+                          ? (_isKhmer ? 'កំពុងស្កេនជីវមាត្រ...' : 'Scanning Biometric Sensor...')
                           : (_isKhmer
                               ? 'ចុចលើរូបដើម្បីសាកល្បងស្កេន (Tap to Test)'
                               : 'Tap Sensor to Test Instant Scan'),
                   style: GoogleFonts.battambang(
-                    fontSize: 16,
+                    fontSize: 15.5,
                     fontWeight: FontWeight.bold,
                     color: _scanSuccess
                         ? const Color(0xFF047857)
@@ -757,29 +769,29 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                             : const Color(0xFF1E293B),
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 4),
                 Text(
                   _scanSuccess
                       ? (_isKhmer
                           ? 'សូមស្វាគមន៍មកកាន់ Chip Mong Bank, ម៉េង ថេត (Meng Theth)'
                           : 'Welcome back to Chip Mong Bank, Meng Theth')
                       : (_isKhmer
-                          ? 'ដំណើរការដោយ Android BiometricPrompt API / iOS LocalAuthentication'
-                          : 'Powered by Android BiometricPrompt / iOS LocalAuthentication'),
+                          ? 'ដំណើរការដោយ Android BiometricPrompt & iOS LocalAuthentication'
+                          : 'Powered by Android BiometricPrompt & iOS LocalAuthentication'),
                   textAlign: TextAlign.center,
                   style: GoogleFonts.battambang(
-                    fontSize: 12,
+                    fontSize: 11.5,
                     color: const Color(0xFF64748B),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
           // Speed Comparison Metric Card
           Container(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
@@ -788,14 +800,14 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _isKhmer ? '📊 ការប្រៀបធៀបល្បឿន និងបទពិសោធន៍' : '📊 Speed & UX Benchmark',
+                  _isKhmer ? '📊 សូចនាករល្បឿន និងបទពិសោធន៍អ្នកប្រើប្រាស់' : '📊 UX Turnaround & Speed Benchmark',
                   style: GoogleFonts.battambang(
-                    fontSize: 14,
+                    fontSize: 13.5,
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF0F172A),
                   ),
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
                 _buildMetricBar(
                   title: _isKhmer ? '⚡ Biometric Quick Login' : '⚡ Biometric Quick Login',
                   time: '0.8s',
@@ -803,7 +815,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                   barColor: const Color(0xFF10B981),
                   badge: _isKhmer ? 'លឿនជាង ៨ ដង' : '8x Faster',
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 _buildMetricBar(
                   title: _isKhmer ? '⏳ ការវាយលេខកូដ PIN ៦ ខ្ទង់' : '⏳ Manual 6-Digit PIN',
                   time: '6.5s',
@@ -832,10 +844,10 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: GoogleFonts.battambang(fontSize: 12.5, fontWeight: FontWeight.w600)),
+            Text(title, style: GoogleFonts.battambang(fontSize: 12, fontWeight: FontWeight.w600)),
             Row(
               children: [
-                Text(time, style: GoogleFonts.roboto(fontSize: 13, fontWeight: FontWeight.bold)),
+                Text(time, style: GoogleFonts.roboto(fontSize: 12.5, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -870,14 +882,14 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
     );
   }
 
-  // TAB 2: QUICK PAY UNDER $500 SIMULATOR
+  // TAB 2: ONE-TOUCH QUICKPAY SIMULATOR
   Widget _buildQuickPayTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Banner
+          // Banner pitch
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -893,12 +905,12 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.qr_code_scanner_rounded, color: Color(0xFF5EEAD4), size: 22),
+                    const Icon(Icons.touch_app_rounded, color: Color(0xFF5EEAD4), size: 22),
                     const SizedBox(width: 8),
                     Text(
-                      _isKhmer ? 'ទូទាត់រហ័សក្រោម \$500 គ្មាន PIN/OTP' : 'Biometric Quick Pay Under \$500',
+                      _isKhmer ? 'One-Touch QuickPay សម្រាប់ប្រតិបត្តិការតូច' : 'One-Touch QuickPay for Micro-Purchases',
                       style: GoogleFonts.battambang(
-                        fontSize: 15.5,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -908,24 +920,24 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                 const SizedBox(height: 8),
                 Text(
                   _isKhmer
-                      ? 'ពេលស្កេនទូទាត់ KHQR នៅផ្សារ ឬផ្ទេរប្រាក់ក្រោម \$500 គ្រាន់តែស្កេនក្រយៅដៃ ឬផ្ទៃមុខ ១ វិនាទី ដើម្បីបញ្ជាក់ភ្លាមៗ ដោយមិនបាច់វាយលេខ PIN ឬរង់ចាំ SMS OTP ឡើយ!'
-                      : 'For KHQR merchant payments or transfers under \$500, sign instantly with Face ID or Touch ID without PIN friction or SMS OTP delays.',
+                      ? 'ដូចមានបញ្ជាក់ក្នុងសំណើ ៤.១៖ ពេលទិញកាហ្វេ \$1.50 ឬទំនិញ \$5 នៅ Chip Mong Supermarket អតិថិជនគ្រាន់តែស្កេនមេដៃ ឬផ្ទៃមុខ One-Touch QuickPay ដោយមិនបាច់វាយលេខកូដ PIN រាល់ពេលឡើយ!'
+                      : 'Per Proposal 4.1: When buying \$1.50 coffee or \$5 groceries at Chip Mong Supermarket, customers approve instantly with One-Touch Biometrics without manual PIN fatigue.',
                   style: GoogleFonts.battambang(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.9),
+                    color: Colors.white.withValues(alpha: 0.92),
                     height: 1.45,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
 
-          // Preset Transaction Cards to test
+          // Presets strictly from Proposal 4.1
           Text(
-            _isKhmer ? 'ជ្រើសរើសប្រតិបត្តិការដើម្បីសាកល្បង៖' : 'Select a sample transaction to test:',
+            _isKhmer ? 'ជ្រើសរើសប្រតិបត្តិការគំរូពីសំណើ ៤.១៖' : 'Select sample scenario from Proposal 4.1:',
             style: GoogleFonts.battambang(
-              fontSize: 13.5,
+              fontSize: 13,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF1E293B),
             ),
@@ -933,31 +945,31 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
           const SizedBox(height: 10),
 
           _buildTransactionOption(
-            icon: Icons.local_grocery_store_rounded,
-            title: 'Chip Mong Supermarket',
-            subtitle: 'Grocery Express & Drinks',
-            amount: 24.50,
+            icon: Icons.coffee_rounded,
+            title: 'Brown Coffee (ទិញកាហ្វេ)',
+            subtitle: 'Micro-purchase scenario from Proposal 4.1',
+            amount: 1.50,
           ),
           _buildTransactionOption(
-            icon: Icons.coffee_rounded,
-            title: 'Brown Coffee KHQR Pay',
-            subtitle: 'Latte & Croissant',
-            amount: 4.80,
+            icon: Icons.local_grocery_store_rounded,
+            title: 'Chip Mong Supermarket (ទិញទំនិញ)',
+            subtitle: 'Groceries scenario from Proposal 4.1',
+            amount: 5.00,
           ),
           _buildTransactionOption(
             icon: Icons.school_rounded,
-            title: 'NUM Tuition Partial Payment',
-            subtitle: 'National University of Management',
+            title: 'NUM Tuition Installment (សាកលវិទ្យាល័យ)',
+            subtitle: 'National University of Management (Proposal 4.3)',
             amount: 250.00,
           ),
           _buildTransactionOption(
             icon: Icons.apartment_rounded,
-            title: 'Apartment Monthly Rent (High Value)',
-            subtitle: 'Over \$500 limit test scenario',
+            title: 'High-Value Transfer (ប្រតិបត្តិការខ្ពស់)',
+            subtitle: 'Step-Up Security fallback demo (> \$10 threshold)',
             amount: 650.00,
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 18),
 
           // Active Selected Transaction Card
           Container(
@@ -968,7 +980,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               border: Border.all(
                 color: _selectedPayAmount <= _quickPayLimit
                     ? const Color(0xFF10B981)
-                    : const Color(0xFFEF4444),
+                    : const Color(0xFFF59E0B),
                 width: 1.5,
               ),
               boxShadow: [
@@ -990,7 +1002,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                         Text(
                           _selectedMerchant,
                           style: GoogleFonts.battambang(
-                            fontSize: 14,
+                            fontSize: 13.5,
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFF0F172A),
                           ),
@@ -998,7 +1010,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                         Text(
                           _selectedItemName,
                           style: GoogleFonts.battambang(
-                            fontSize: 11.5,
+                            fontSize: 11,
                             color: const Color(0xFF64748B),
                           ),
                         ),
@@ -1011,7 +1023,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                         fontWeight: FontWeight.w800,
                         color: _selectedPayAmount <= _quickPayLimit
                             ? AppColors.primaryGreen
-                            : const Color(0xFFDC2626),
+                            : const Color(0xFFD97706),
                       ),
                     ),
                   ],
@@ -1022,7 +1034,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                   decoration: BoxDecoration(
                     color: _selectedPayAmount <= _quickPayLimit
                         ? const Color(0xFFECFDF5)
-                        : const Color(0xFFFEF2F2),
+                        : const Color(0xFFFFFBEB),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
@@ -1030,28 +1042,28 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                       Icon(
                         _selectedPayAmount <= _quickPayLimit
                             ? Icons.check_circle_rounded
-                            : Icons.warning_rounded,
+                            : Icons.security_rounded,
                         size: 16,
                         color: _selectedPayAmount <= _quickPayLimit
                             ? const Color(0xFF059669)
-                            : const Color(0xFFDC2626),
+                            : const Color(0xFFD97706),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           _selectedPayAmount <= _quickPayLimit
                               ? (_isKhmer
-                                  ? 'ចូលលក្ខខណ្ឌ Biometric Quick Pay (< \$500) — គ្មាន PIN / OTP'
-                                  : 'Eligible for Biometric Quick Pay (< \$500) — No PIN / OTP')
+                                  ? 'ចូលលក្ខខណ្ឌ One-Touch QuickPay (< \$${_quickPayLimit.toInt()}) — គ្មាន PIN'
+                                  : 'Eligible for One-Touch QuickPay (< \$${_quickPayLimit.toInt()}) — No PIN')
                               : (_isKhmer
-                                  ? 'លើសកម្រិតកំណត់ \$500 — តម្រូវឱ្យប្រើ PIN + SMS OTP ធម្មតា'
-                                  : 'Exceeds \$500 threshold — Requires PIN + SMS OTP fallback'),
+                                  ? 'លើសកម្រិតកំណត់ \$${_quickPayLimit.toInt()} — តម្រូវឱ្យប្រើ Biometric Step-Up (PIN/OTP)'
+                                  : 'Exceeds \$${_quickPayLimit.toInt()} limit — Triggers Biometric Step-Up (PIN/OTP)'),
                           style: GoogleFonts.battambang(
                             fontSize: 11.5,
                             fontWeight: FontWeight.w600,
                             color: _selectedPayAmount <= _quickPayLimit
                                 ? const Color(0xFF065F46)
-                                : const Color(0xFF991B1B),
+                                : const Color(0xFF92400E),
                           ),
                         ),
                       ),
@@ -1081,10 +1093,10 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                     ),
                     label: Text(
                       _selectedPayAmount <= _quickPayLimit
-                          ? (_isKhmer ? 'ទូទាត់ភ្លាមៗដោយជីវមាត្រ' : 'Pay Instantly with Biometrics')
-                          : (_isKhmer ? 'ទូទាត់ជាមួយ PIN & OTP' : 'Pay via Standard PIN & OTP'),
+                          ? (_isKhmer ? 'ទូទាត់ One-Touch QuickPay' : 'Approve with One-Touch QuickPay')
+                          : (_isKhmer ? 'ទូទាត់ជាមួយ Step-Up PIN & OTP' : 'Pay via Step-Up PIN & OTP'),
                       style: GoogleFonts.battambang(
-                        fontSize: 14,
+                        fontSize: 13.5,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -1141,7 +1153,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                   Text(
                     title,
                     style: GoogleFonts.battambang(
-                      fontSize: 13,
+                      fontSize: 12.5,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0F172A),
                     ),
@@ -1149,7 +1161,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                   Text(
                     subtitle,
                     style: GoogleFonts.battambang(
-                      fontSize: 11,
+                      fontSize: 10.5,
                       color: const Color(0xFF64748B),
                     ),
                   ),
@@ -1161,7 +1173,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               style: GoogleFonts.roboto(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
-                color: amount <= _quickPayLimit ? const Color(0xFF059669) : const Color(0xFFDC2626),
+                color: amount <= _quickPayLimit ? const Color(0xFF059669) : const Color(0xFFD97706),
               ),
             ),
           ],
@@ -1170,14 +1182,14 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
     );
   }
 
-  // TAB 3: SECURITY, PROPOSAL VALUE, & SETTINGS
-  Widget _buildSettingsTab() {
+  // TAB 3: FIDO2, STEP-UP SECURITY, & KPIS
+  Widget _buildSecurityAndKpiTab() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Proposal Deep Dive Card
+          // Section 4.1 Proposal Details Card
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
@@ -1190,12 +1202,12 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.description_rounded, color: AppColors.primaryGreen, size: 22),
+                    const Icon(Icons.verified_user_rounded, color: AppColors.primaryGreen, size: 22),
                     const SizedBox(width: 8),
                     Text(
-                      _isKhmer ? 'ខ្លឹមសារសំណើគម្រោង (Proposal Summary)' : 'Proposal Executive Details',
+                      _isKhmer ? 'យន្តការសុវត្ថិភាព Biometric Step-Up (៤.១)' : 'Biometric Step-Up Security (4.1)',
                       style: GoogleFonts.battambang(
-                        fontSize: 14.5,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF0F172A),
                       ),
@@ -1204,35 +1216,35 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                 ),
                 const SizedBox(height: 12),
                 _buildProposalBullet(
-                  titleKm: 'ផលវិបាករបស់អតិថិជន (Pain Points):',
-                  titleEn: 'Customer Pain Points:',
-                  descKm: '• ភ្លេចលេខសម្ងាត់ PIN/Password ពេលកំពុងប្រញាប់នៅមុខបញ្ជរ\n• ហានិភ័យ Shoulder Surfing នៅទីសាធារណៈ\n• រង់ចាំ SMS OTP យឺតយ៉ាវដោយសារសេវាទូរស័ព្ទខ្សោយ',
-                  descEn: '• Forgotten PIN/passwords during checkout rushes\n• Shoulder surfing risks in public crowded locations\n• SMS OTP latency due to mobile network signal deadzones',
+                  titleKm: 'គោលការណ៍ Biometric Step-Up Security:',
+                  titleEn: 'Biometric Step-Up Protocol:',
+                  descKm: 'កម្រិតការផ្ទៀងផ្ទាត់ត្រូវកើនឡើងទៅតាមទំហំទឹកប្រាក់ និងកម្រិតហានិភ័យនៃប្រតិបត្តិការ។ ប្រតិបត្តិការទំហំតូច (ក្រោម \$10) ប្រើ One-Touch Biometric រហ័ស។ ប្រតិបត្តិការខ្ពស់ ឬមានសញ្ញាសង្ស័យ ត្រូវ Step-up ទាមទារ PIN ឬ OTP បន្ថែម។',
+                  descEn: 'Verification rigor scales progressively with transaction value and risk rating. Micro-purchases (< \$10) authenticate with 1-touch; higher-value transactions step up to mandatory PIN or SMS OTP.',
                 ),
                 const SizedBox(height: 10),
                 _buildProposalBullet(
-                  titleKm: 'ដំណោះស្រាយ (Solution):',
-                  titleEn: 'Bank Solution:',
-                  descKm: '• ផ្ទៀងផ្ទាត់ជីវមាត្រកម្រិតខ្ពស់ ក្រយៅដៃ និងផ្ទៃមុខ\n• ចូលប្រើ App ត្រឹមតែ ១ វិនាទី (Quick Login)\n• អនុម័តទូទាត់ក្រោម \$500 ភ្លាមៗដោយគ្មាន PIN/OTP',
-                  descEn: '• Native Biometric Authentication (Face ID & Touch ID)\n• 1-second Instant App Quick Login\n• Fast transaction signing for purchases under \$500 without PIN/OTP',
+                  titleKm: 'ស្តង់ដារ FIDO2 & Local On-Device Processing:',
+                  titleEn: 'FIDO2 Standard & On-Device Security:',
+                  descKm: 'ទិន្នន័យស្នាមមេដៃ ឬផ្ទៃមុខត្រូវដំណើរការលើឧបករណ៍អ្នកប្រើប្រាស់ (Secure Enclave / Android Keystore) ដោយមិនបញ្ជូនរូបភាព Biometric ដើមទៅម៉ាស៊ីនមេរបស់ធនាគារឡើយ។',
+                  descEn: 'Biometric keys are processed entirely within local hardware Secure Enclave using FIDO2 cryptographic tokens. No raw biometric imagery is ever transmitted to the bank server.',
                 ),
                 const SizedBox(height: 10),
                 _buildProposalBullet(
-                  titleKm: 'ផលចំណេញដល់ធនាគារ (Value to Bank):',
-                  titleEn: 'Value to Chip Mong Bank:',
-                  descKm: '• បង្កើនសុវត្ថិភាពខ្ពស់បំផុតការពារការលួចគណនី (Anti-Fraud)\n• កាត់បន្ថយថ្លៃដើមផ្ញើសារ SMS OTP រាប់ម៉ឺនដុល្លារក្នុងមួយខែ\n• ជំរុញចំនួនអ្នកប្រើប្រាស់សកម្ម (Daily Active Users - DAU)',
-                  descEn: '• Superior cryptographic Anti-Fraud defense\n• Substantial operational savings on SMS OTP provider fees\n• Drives Daily Active Users (DAU) & higher card transaction velocity',
+                  titleKm: 'Face Liveness Detection:',
+                  titleEn: 'Face Liveness Anti-Spoofing:',
+                  descKm: 'ផ្ទៀងផ្ទាត់ភាពរស់រវើកនៃផ្ទៃមុខ ដើម្បីការពារការក្លែងបន្លំតាមរយៈរូបថត ឬវីដេអូ (Presentation Attack Detection) តាមស្តង់ដារសុវត្ថិភាពធនាគារ។',
+                  descEn: 'Detects facial motion and depth to prevent photo or video replay presentation attacks, meeting international banking standards.',
                 ),
               ],
             ),
           ),
           const SizedBox(height: 18),
 
-          // Toggles
+          // Toggles and Controls
           Text(
-            _isKhmer ? 'ការកំណត់សុវត្ថិភាពជីវមាត្រ' : 'Biometric Security Controls',
+            _isKhmer ? 'ការកំណត់កម្រិត One-Touch QuickPay' : 'One-Touch QuickPay Controls',
             style: GoogleFonts.battambang(
-              fontSize: 14,
+              fontSize: 13.5,
               fontWeight: FontWeight.bold,
               color: const Color(0xFF1E293B),
             ),
@@ -1252,11 +1264,11 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                   activeThumbColor: AppColors.primaryGreen,
                   title: Text(
                     _isKhmer ? 'ចូលគណនីរហ័សតាម Biometrics' : 'Quick Biometric Login',
-                    style: GoogleFonts.battambang(fontSize: 13.5, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.battambang(fontSize: 13, fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
                     _isKhmer ? 'ប្រើក្រយៅដៃ ឬផ្ទៃមុខជំនួសពាក្យសម្ងាត់' : 'Use fingerprint or face recognition instead of password',
-                    style: GoogleFonts.battambang(fontSize: 11.5, color: const Color(0xFF64748B)),
+                    style: GoogleFonts.battambang(fontSize: 11, color: const Color(0xFF64748B)),
                   ),
                   value: _enableBiometricLogin,
                   onChanged: (val) => setState(() => _enableBiometricLogin = val),
@@ -1266,15 +1278,30 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                   contentPadding: EdgeInsets.zero,
                   activeThumbColor: AppColors.primaryGreen,
                   title: Text(
-                    _isKhmer ? 'ទូទាត់រហ័សក្រោម \$500' : 'Quick Pay Under Threshold',
-                    style: GoogleFonts.battambang(fontSize: 13.5, fontWeight: FontWeight.bold),
+                    _isKhmer ? 'One-Touch QuickPay (< \$${_quickPayLimit.toInt()})' : 'One-Touch QuickPay (< \$${_quickPayLimit.toInt()})',
+                    style: GoogleFonts.battambang(fontSize: 13, fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    _isKhmer ? 'មិនបាច់វាយ PIN សម្រាប់ប្រតិបត្តិការខ្នាតតូច' : 'No PIN required for small retail KHQR payments',
-                    style: GoogleFonts.battambang(fontSize: 11.5, color: const Color(0xFF64748B)),
+                    _isKhmer ? 'មិនបាច់វាយ PIN សម្រាប់កាហ្វេ និងទំនិញតូចតាច' : 'No PIN required for coffee & small groceries',
+                    style: GoogleFonts.battambang(fontSize: 11, color: const Color(0xFF64748B)),
                   ),
                   value: _enableBiometricPay,
                   onChanged: (val) => setState(() => _enableBiometricPay = val),
+                ),
+                const Divider(),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  activeThumbColor: AppColors.primaryGreen,
+                  title: Text(
+                    _isKhmer ? 'Face Liveness Detection' : 'Face Liveness Detection',
+                    style: GoogleFonts.battambang(fontSize: 13, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    _isKhmer ? 'ការពារការក្លែងបន្លំរូបថត ឬវីដេអូ' : 'Anti-spoofing presentation attack detection',
+                    style: GoogleFonts.battambang(fontSize: 11, color: const Color(0xFF64748B)),
+                  ),
+                  value: _enableLivenessDetection,
+                  onChanged: (val) => setState(() => _enableLivenessDetection = val),
                 ),
                 const Divider(),
                 Padding(
@@ -1286,8 +1313,8 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            _isKhmer ? 'កម្រិតទឹកប្រាក់អតិបរមាគ្មាន PIN' : 'Biometric Max Threshold',
-                            style: GoogleFonts.battambang(fontSize: 13, fontWeight: FontWeight.bold),
+                            _isKhmer ? 'កម្រិតសាកល្បង One-Touch (Pilot Limit)' : 'One-Touch Pilot Threshold',
+                            style: GoogleFonts.battambang(fontSize: 12.5, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             '\$${_quickPayLimit.toStringAsFixed(0)}',
@@ -1300,12 +1327,18 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                         ],
                       ),
                       Slider(
-                        min: 100,
-                        max: 1000,
+                        min: 5,
+                        max: 50,
                         divisions: 9,
                         activeColor: AppColors.primaryGreen,
                         value: _quickPayLimit,
                         onChanged: (val) => setState(() => _quickPayLimit = val),
+                      ),
+                      Text(
+                        _isKhmer
+                            ? 'កម្រិតក្រោម \$10 ជាកម្រិតសាកល្បងដំបូងស្របតាមសំណើ ៤.១'
+                            : 'Threshold under \$10 recommended for initial pilot per Proposal 4.1',
+                        style: GoogleFonts.battambang(fontSize: 10.5, color: const Color(0xFF64748B)),
                       ),
                     ],
                   ),
@@ -1315,7 +1348,7 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
           ),
           const SizedBox(height: 18),
 
-          // Technical Architecture & Hardware Badge
+          // Proposal 4.1 KPIs Dashboard Card
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -1327,23 +1360,23 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.security_rounded, color: Color(0xFF34D399), size: 20),
+                    const Icon(Icons.insights_rounded, color: Color(0xFF34D399), size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      'Hardware Security Architecture',
+                      _isKhmer ? 'សូចនាករវាស់វែងប្រសិទ្ធភាព (KPIs per 4.1)' : 'Success Metrics & KPIs (Proposal 4.1)',
                       style: GoogleFonts.roboto(
-                        fontSize: 13.5,
+                        fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                _buildTechRow('API Integration', 'AndroidX BiometricPrompt & iOS LocalAuth'),
-                _buildTechRow('Key Storage', 'Hardware-backed Keystore / Secure Enclave'),
-                _buildTechRow('Cryptographic Algo', 'ECDSA P-256 with SHA-256 Digest'),
-                _buildTechRow('Compliance', 'NBC KHQR Digital Security Standard & PCI-DSS'),
+                const SizedBox(height: 12),
+                _buildTechRow('Turnaround Time', '0.78s (Down from 6.5s)'),
+                _buildTechRow('Transaction Failure Rate', '< 0.02% (Target < 0.1%)'),
+                _buildTechRow('Public Shoulder Surfing Risk', '0% (PIN-free Micro-Pay)'),
+                _buildTechRow('Raw Biometric Server Leakage', '0% (FIDO2 On-Device Keystore)'),
               ],
             ),
           ),
@@ -1364,16 +1397,16 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
         Text(
           _isKhmer ? titleKm : titleEn,
           style: GoogleFonts.battambang(
-            fontSize: 12.5,
+            fontSize: 12,
             fontWeight: FontWeight.bold,
             color: const Color(0xFF065F46),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 3),
         Text(
           _isKhmer ? descKm : descEn,
           style: GoogleFonts.battambang(
-            fontSize: 11.5,
+            fontSize: 11,
             color: const Color(0xFF334155),
             height: 1.45,
           ),

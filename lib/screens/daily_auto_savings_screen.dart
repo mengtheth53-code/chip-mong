@@ -13,6 +13,9 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
   double _currentPocketBalance = 185.00;
   double _selectedDailyAmount = 2.0; // $2 / day -> $60 / month
   bool _isAutoSaveActive = true;
+  bool _smartBalanceGuardEnabled = true;
+  final double _safetyBufferThreshold = 5.0; // $5 min balance guard
+  final int _streakDays = 14;
   final String _debitTime = '08:00 AM';
 
   void _withdrawToMainAccount() {
@@ -255,23 +258,119 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
               children: [
                 _buildPlanCard(
                   amount: 1.0,
+                  khrAmount: '4,000៛',
                   monthly: '~\$30/ខែ',
                   label: 'កម្រិតដំបូង',
                 ),
                 const SizedBox(width: 8),
                 _buildPlanCard(
                   amount: 2.0,
+                  khrAmount: '8,000៛',
                   monthly: '~\$60/ខែ',
-                  label: 'ពេញនិយម',
+                  label: 'ពេញនិយមបំផុត',
                   isPopular: true,
                 ),
                 const SizedBox(width: 8),
                 _buildPlanCard(
                   amount: 5.0,
+                  khrAmount: '20,000៛',
                   monthly: '~\$150/ខែ',
                   label: 'សន្សំខ្ពស់',
                 ),
               ],
+            ),
+            const SizedBox(height: 18),
+
+            // Smart Balance Guard Card (Proposal 4.5 Feature)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: _smartBalanceGuardEnabled ? const Color(0xFF6EE7B7) : Colors.grey.shade300,
+                  width: 1.2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0FA958).withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(Icons.security_rounded, color: Color(0xFF0FA958), size: 20),
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Smart Balance Guard',
+                                style: GoogleFonts.roboto(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Text(
+                                'ប្រព័ន្ធការពារសមតុល្យឆ្លាតវៃ',
+                                style: GoogleFonts.battambang(
+                                  fontSize: 11.5,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Switch(
+                        value: _smartBalanceGuardEnabled,
+                        activeThumbColor: const Color(0xFF0FA958),
+                        onChanged: (val) => setState(() => _smartBalanceGuardEnabled = val),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0FDF4),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info_outline, color: Color(0xFF16A34A), size: 18),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'ប្រសិនបើសមតុល្យក្នុងគណនីធ្លាក់ក្រោម \$${_safetyBufferThreshold.toStringAsFixed(2)} ប្រព័ន្ធនឹងផ្អាកការកាត់ប្រាក់ស្វ័យប្រវត្ត ដើម្បីកុំឱ្យប៉ះពាល់ការចាយវាយប្រចាំថ្ងៃ ឬជួបបញ្ហា Overdraft។',
+                            style: GoogleFonts.battambang(
+                              fontSize: 11,
+                              color: const Color(0xFF166534),
+                              height: 1.35,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 18),
 
@@ -346,7 +445,7 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
             ),
             const SizedBox(height: 18),
 
-            // 7-Day Savings Streak Record
+            // Gamification: Streaks & Badges (Proposal 4.5 Feature)
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -367,7 +466,7 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'ប្រវត្តិសន្សំ ៧ ថ្ងៃចុងក្រោយ (Streak)',
+                        'ប្រវត្តិសន្សំ ៧ ថ្ងៃចុងក្រោយ',
                         style: GoogleFonts.battambang(
                           fontSize: 14.5,
                           fontWeight: FontWeight.w700,
@@ -375,9 +474,9 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
                         ),
                       ),
                       Text(
-                        '៧ ថ្ងៃជាប់គ្នា 🔥',
+                        '$_streakDays ថ្ងៃជាប់គ្នា 🔥',
                         style: GoogleFonts.battambang(
-                          fontSize: 12,
+                          fontSize: 12.5,
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFFEA580C),
                         ),
@@ -404,6 +503,166 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
                         ],
                       );
                     }).toList(),
+                  ),
+                  const Divider(height: 24),
+
+                  // Milestone Gamification Badges
+                  Text(
+                    'ផ្លាកសញ្ញាលើកទឹកចិត្ត (Gamification Badges)៖',
+                    style: GoogleFonts.battambang(fontSize: 12.5, fontWeight: FontWeight.bold, color: Colors.black87),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildBadgeItem(
+                          icon: '🥉',
+                          title: 'Bronze Saver',
+                          target: '30 ថ្ងៃ',
+                          reward: '+100 pts',
+                          isAchieved: false,
+                          progress: '14/30',
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildBadgeItem(
+                          icon: '🥈',
+                          title: 'Silver Saver',
+                          target: '60 ថ្ងៃ',
+                          reward: 'Voucher 10%',
+                          isAchieved: false,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildBadgeItem(
+                          icon: '🥇',
+                          title: 'Gold Saver',
+                          target: '90 ថ្ងៃ',
+                          reward: 'Legend Cinema',
+                          isAchieved: false,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+
+            // Financial Math & CASA Projections Card (Proposal 4.5 Core Value)
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.calculate_rounded, color: Color(0xFF34D399), size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        'គណិតវិទ្យាហិរញ្ញវត្ថុ & តម្លៃយុទ្ធសាស្ត្រ',
+                        style: GoogleFonts.battambang(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Customer Perspective
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '👤 សម្រាប់អតិថិជន (Customer Value):',
+                          style: GoogleFonts.battambang(
+                            color: const Color(0xFF6EE7B7),
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '\$2 / ថ្ងៃ  x  365 ថ្ងៃ  =  \$730 / ឆ្នាំ',
+                          style: GoogleFonts.roboto(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Text(
+                          'សន្សំបានយ៉ាងងាយស្រួលដោយមិនមានអារម្មណ៍ថាជាបន្ទុកថវិកាប្រចាំខែ។',
+                          style: GoogleFonts.battambang(
+                            color: Colors.white70,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Bank CASA Liquidity Perspective
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '🏛️ សម្រាប់ធនាគារ ជីប ម៉ុង (Bank CASA Impact):',
+                          style: GoogleFonts.battambang(
+                            color: const Color(0xFFFBBF24),
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '100,000 នាក់  x  \$1/ថ្ងៃ  =  \$36,500,000 / ឆ្នាំ',
+                          style: GoogleFonts.roboto(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Text(
+                          'បង្កើតលំហូរប្រាក់បញ្ញើចរន្ត (CASA) ថ្មី \$36.5M ដែលជាទុនថ្លៃដើមទាប និងមានស្ថេរភាពខ្ពស់បំផុត (Sticky Liquidity)។',
+                          style: GoogleFonts.battambang(
+                            color: Colors.white70,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -446,6 +705,7 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
 
   Widget _buildPlanCard({
     required double amount,
+    required String khrAmount,
     required String monthly,
     required String label,
     bool isPopular = false,
@@ -455,7 +715,7 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
       child: GestureDetector(
         onTap: () => setState(() => _selectedDailyAmount = amount),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
           decoration: BoxDecoration(
             color: isSelected ? const Color(0xFFDFF5EA) : Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -488,18 +748,25 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
                   ),
                 ),
               Text(
-                '\$${amount.toInt()} / ថ្ងៃ',
+                '\$${amount.toInt()}',
                 style: GoogleFonts.roboto(
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: FontWeight.w800,
                   color: isSelected ? const Color(0xFF065F46) : Colors.black87,
+                ),
+              ),
+              Text(
+                khrAmount,
+                style: GoogleFonts.battambang(
+                  fontSize: 10,
+                  color: Colors.grey.shade600,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 monthly,
                 style: GoogleFonts.battambang(
-                  fontSize: 11.5,
+                  fontSize: 11,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF0FA958),
                 ),
@@ -507,6 +774,62 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBadgeItem({
+    required String icon,
+    required String title,
+    required String target,
+    required String reward,
+    required bool isAchieved,
+    String? progress,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        children: [
+          Text(icon, style: const TextStyle(fontSize: 22)),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: GoogleFonts.roboto(fontSize: 10.5, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            target,
+            style: GoogleFonts.battambang(fontSize: 10, color: Colors.grey.shade600),
+          ),
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0FA958).withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              reward,
+              style: GoogleFonts.battambang(
+                fontSize: 9.5,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF0FA958),
+              ),
+            ),
+          ),
+          if (progress != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              progress,
+              style: GoogleFonts.roboto(fontSize: 9, fontWeight: FontWeight.bold, color: const Color(0xFFEA580C)),
+            ),
+          ],
+        ],
       ),
     );
   }

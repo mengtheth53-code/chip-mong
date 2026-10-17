@@ -73,7 +73,7 @@ class _CampusHubScreenState extends State<CampusHubScreen> with SingleTickerProv
               ),
               child: Column(
                 children: [
-                  _buildInvoiceRow('សាកលវិទ្យាល័យ', 'RUPP'),
+                  _buildInvoiceRow('សាកលវិទ្យាល័យ', 'NUM (National University of Management)'),
                   const SizedBox(height: 6),
                   _buildInvoiceRow('អត្តលេខនិស្សិត', 'STU-2026-9812'),
                   const SizedBox(height: 6),
@@ -340,7 +340,7 @@ class _CampusHubScreenState extends State<CampusHubScreen> with SingleTickerProv
                             ),
                           ),
                           Text(
-                            'Major: Computer Science',
+                            'Major: Information Technology (IT)',
                             style: GoogleFonts.roboto(
                               color: Colors.white70,
                               fontSize: 12,

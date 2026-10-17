@@ -746,25 +746,25 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                     children: [
                       _buildInnovationMiniPill(
                         icon: Icons.fingerprint_rounded,
-                        label: 'Biometrics',
+                        label: 'One-Touch QuickPay',
                         onTap: () => _openScreen(const BiometricAuthScreen()),
                       ),
                       const SizedBox(width: 8),
                       _buildInnovationMiniPill(
                         icon: Icons.bolt_rounded,
-                        label: 'Smart Credit',
+                        label: 'Smart Nano-Credit',
                         onTap: () => _openScreen(const SmartCreditScreen()),
                       ),
                       const SizedBox(width: 8),
                       _buildInnovationMiniPill(
                         icon: Icons.school_rounded,
-                        label: 'Campus Hub',
+                        label: 'NUM Campus Hub',
                         onTap: () => _openScreen(const CampusHubScreen()),
                       ),
                       const SizedBox(width: 8),
                       _buildInnovationMiniPill(
                         icon: Icons.groups_rounded,
-                        label: 'Shared Savings',
+                        label: 'Shared Goal Vault',
                         onTap: () => _openScreen(const SharedSavingsScreen()),
                       ),
                       const SizedBox(width: 8),
