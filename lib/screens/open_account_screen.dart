@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'fill_screen.dart';
 import 'daily_auto_savings_screen.dart';
 import 'shared_savings_screen.dart';
+import 'term_deposit_screen.dart';
 
 class OpenAccountScreen extends StatelessWidget {
   const OpenAccountScreen({super.key});
@@ -144,11 +145,18 @@ class OpenAccountScreen extends StatelessWidget {
                           Color(0xFF2D9429),
                         ],
                         icon: Icons.work_outline,
-                        rate: '5.10%',
-                        title: 'បញ្ញើមានកាលកំណត់',
+                        rate: '6.75%',
+                        title: 'បញ្ញើមានកាលកំណត់ (Term Deposit)',
                         subtitle:
-                            'ទទួលបានការប្រាក់ខ្ពស់លើការសន្សំរបស់អ្នក ជាមួយនិងបញ្ញើមានកាលកំណត់',
+                            'ទទួលបានការប្រាក់ខ្ពស់រហូតដល់ 8.25% លើការសន្សំរបស់អ្នក ជាមួយនិងបញ្ញើមានកាលកំណត់',
                         buttonTextColor: const Color(0xFF2D9429),
+                        onOpenPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const TermDepositScreen(),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 14),
 

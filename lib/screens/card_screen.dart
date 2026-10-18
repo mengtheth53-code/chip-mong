@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'virtual_card_screen.dart';
 
 class CardScreen extends StatelessWidget {
   const CardScreen({super.key});
@@ -30,6 +31,8 @@ class CardScreen extends StatelessWidget {
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
+                    _buildVirtualCardTile(context),
+                    const SizedBox(height: 14),
                     _buildDebitCardTile(context),
                   ],
                 ),
@@ -110,6 +113,138 @@ class CardScreen extends StatelessWidget {
         ),
         const SizedBox(height: 20),
       ],
+    );
+  }
+
+  Widget _buildVirtualCardTile(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFF0FA958).withValues(alpha: 0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const VirtualCardScreen(),
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Gradient Virtual Card Icon
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF0FA958), Color(0xFF085329)],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.contactless_rounded,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 14),
+
+                // Card Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'ប័ណ្ណនិម្មិត UnionPay',
+                              style: GoogleFonts.battambang(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF1E1E1E),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF003882),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              'UnionPay',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'បង្កើត ឬគ្រប់គ្រងប័ណ្ណនិម្មិត UnionPay ភ្លាមៗ ឥតគិតថ្លៃសេវា សម្រាប់ទិញទំនិញ Online សុវត្ថិភាពខ្ពស់ ជាមួយ CVV Reveal & Card Freeze។',
+                        style: GoogleFonts.battambang(
+                          fontSize: 12.5,
+                          color: const Color(0xFF4B5563),
+                          height: 1.45,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0FA958).withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              'គ្រប់គ្រងប័ណ្ណឥឡូវនេះ ->',
+                              style: GoogleFonts.battambang(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF085329),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 

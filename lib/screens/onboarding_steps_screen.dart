@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'success_screen.dart';
+import 'ekyc_scanner_screen.dart';
 
 class OnboardingStepsScreen extends StatefulWidget {
   const OnboardingStepsScreen({super.key});
@@ -248,13 +248,7 @@ class _OnboardingStepsScreenState extends State<OnboardingStepsScreen> {
                               HapticFeedback.lightImpact();
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => const SuccessScreen(
-                                    userName: 'MENG THETH',
-                                    accountLabel: 'គណនីប្រាក់រៀលបស់អ្នក',
-                                    accountNumber: '1016 3840',
-                                    buttonLabel: 'ទំព័រដើម',
-                                    successLabel: 'អបអរសាទរ!',
-                                  ),
+                                  builder: (_) => const EkycScannerScreen(),
                                 ),
                               );
                             }

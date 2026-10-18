@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'create_payment_template_screen.dart';
 import 'edc_payment_screen.dart';
 import 'phone_topup_screen.dart';
+import 'chip_mong_land_payment.dart';
+import 'ppwsa_payment_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
@@ -37,7 +39,7 @@ class _PaymentScreenState extends State<PaymentScreen>
       'icon': Icons.lightbulb,
       'iconColor': Colors.white,
       'iconBg': Color(0xFF78C838),
-      'action': 'edc',
+      'action': 'utilities',
     },
     {
       'title': 'សេវាសាធារណៈ',
@@ -53,7 +55,7 @@ class _PaymentScreenState extends State<PaymentScreen>
       'icon': Icons.account_balance,
       'iconColor': Colors.white,
       'iconBg': Color(0xFF0C8A45),
-      'action': null,
+      'action': 'chip_mong_land',
     },
     {
       'title': 'សប្បុរសធម៌ និងការបរិច្ចាគ',
@@ -438,15 +440,14 @@ class _PaymentScreenState extends State<PaymentScreen>
                         builder: (_) => const PhoneTopupScreen(),
                       ),
                     );
-                  } else if (c['action'] == 'edc') {
+                  } else if (c['action'] == 'chip_mong_land') {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => const EdcPaymentScreen(
-                          billerTitle: 'អគ្គិសនីកម្ពុជា',
-                          billerCode: 'EDC',
-                        ),
+                        builder: (_) => const ChipMongLandPaymentScreen(),
                       ),
                     );
+                  } else if (c['action'] == 'utilities') {
+                    _showUtilityPicker(context);
                   } else {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -546,6 +547,147 @@ class _PaymentScreenState extends State<PaymentScreen>
           ),
           const SizedBox(height: 60),
         ],
+      ),
+    );
+  }
+
+  void _showUtilityPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'ជ្រើសរើសសេវាទឹក ភ្លើង និងសំរាម',
+                  style: GoogleFonts.battambang(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF1E1E1E),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildUtilityTile(
+                  ctx: ctx,
+                  title: 'អគ្គិសនីកម្ពុជា (EDC Electricity)',
+                  subtitle: 'ទូទាត់វិក្កយបត្រភ្លើង EDC រាជធានីភ្នំពេញ និងខេត្ត',
+                  icon: Icons.lightbulb,
+                  color: const Color(0xFF78C838),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const EdcPaymentScreen(
+                          billerTitle: 'អគ្គិសនីកម្ពុជា',
+                          billerCode: 'EDC',
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildUtilityTile(
+                  ctx: ctx,
+                  title: 'រដ្ឋាករទឹកស្វយ័តក្រុងភ្នំពេញ (PPWSA Water)',
+                  subtitle: 'ទូទាត់វិក្កយបត្រទឹកស្អាតរដ្ឋាករទឹក PPWSA',
+                  icon: Icons.water_drop_rounded,
+                  color: const Color(0xFF0284C7),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const PpwsaPaymentScreen(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildUtilityTile(
+                  ctx: ctx,
+                  title: 'សេវាសំរាម (800 Super Waste Management)',
+                  subtitle: 'ទូទាត់ថ្លៃប្រមូលសំរាម និងអនាម័យបរិស្ថាន',
+                  icon: Icons.delete_outline_rounded,
+                  color: const Color(0xFFD97706),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const EdcPaymentScreen(
+                          billerTitle: 'សេវាសំរាម 800 Super',
+                          billerCode: 'WST',
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildUtilityTile({
+    required BuildContext ctx,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: _bgGray,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        leading: Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: color),
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.battambang(
+            fontSize: 13.5,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF1E1E1E),
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: GoogleFonts.battambang(
+            fontSize: 11.5,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+        onTap: onTap,
       ),
     );
   }
