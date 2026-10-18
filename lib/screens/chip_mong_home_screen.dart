@@ -798,12 +798,15 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'បើកមើលបទបង្ហាញពេញលេញ (Open Full Presentation)',
-                          style: GoogleFonts.battambang(
-                            color: Colors.white,
-                            fontSize: 12.5,
-                            fontWeight: FontWeight.w600,
+                        Flexible(
+                          child: Text(
+                            'បើកមើលបទបង្ហាញពេញលេញ (Open Full Presentation)',
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.battambang(
+                              color: Colors.white,
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 6),

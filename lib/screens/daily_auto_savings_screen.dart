@@ -167,13 +167,17 @@ class _DailyAutoSavingsScreenState extends State<DailyAutoSavingsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'កាតាបសន្សំប្រចាំថ្ងៃ (Savings Pocket)',
-                        style: GoogleFonts.battambang(
-                          color: Colors.white70,
-                          fontSize: 13,
+                      Flexible(
+                        child: Text(
+                          'កាតាបសន្សំប្រចាំថ្ងៃ (Savings Pocket)',
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.battambang(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(

@@ -512,159 +512,161 @@ class _QrScreenState extends State<QrScreen> {
         children: [
           const Positioned.fill(child: _BackgroundWatermark()),
           SafeArea(
-            child: Column(
-              children: [
-                // Top App Bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).pop(),
-                          child: Container(
-                            width: 34,
-                            height: 34,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: 18,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Top App Bar
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () => Navigator.of(context).pop(),
+                            child: Container(
+                              width: 34,
+                              height: 34,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 18,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Text(
-                        'ជីប ម៉ុង QR',
-                        style: GoogleFonts.battambang(
+                        Text(
+                          'ជីប ម៉ុង QR',
+                          style: GoogleFonts.battambang(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Top Account Selector Cards
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildAccountPill(
+                            index: 0,
+                            iconText: '៛',
+                            label: 'I...',
+                            badge: 'គណនីគោល',
+                            number: '10163840',
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _buildAccountPill(
+                            index: 1,
+                            iconText: '\$',
+                            label: 'PREMIER ACC...',
+                            badge: null,
+                            number: '10165272',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+
+                  // KHQR Card
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: _buildKhqrCard(),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Enter Amount Button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: GestureDetector(
+                      onTap: _showSetAmountSheet,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: BoxDecoration(
                           color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Top Account Selector Cards
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildAccountPill(
-                          index: 0,
-                          iconText: '៛',
-                          label: 'I...',
-                          badge: 'គណនីគោល',
-                          number: '10163840',
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _buildAccountPill(
-                          index: 1,
-                          iconText: '\$',
-                          label: 'PREMIER ACC...',
-                          badge: null,
-                          number: '10165272',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 18),
-
-                // KHQR Card
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: _buildKhqrCard(),
-                ),
-                const SizedBox(height: 16),
-
-                // Enter Amount Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: GestureDetector(
-                    onTap: _showSetAmountSheet,
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.08),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.add_circle_outline_rounded,
-                            color: Color(0xFF0FA958),
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            _enteredAmount.isEmpty
-                                ? 'បញ្ចូលចំនួនទឹកប្រាក់'
-                                : 'ទឹកប្រាក់: $_enteredAmount $_amountCurrency',
-                            style: GoogleFonts.battambang(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.08),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.add_circle_outline_rounded,
+                              color: Color(0xFF0FA958),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _enteredAmount.isEmpty
+                                  ? 'បញ្ចូលចំនួនទឹកប្រាក់'
+                                  : 'ទឹកប្រាក់: $_enteredAmount $_amountCurrency',
+                              style: GoogleFonts.battambang(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                const Spacer(),
+                  const SizedBox(height: 24),
 
-                // Bottom Action Buttons
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildBottomAction(
-                        icon: Icons.file_download_outlined,
-                        label: 'ទាញយក',
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('បានរក្សាទុកក្នុងវិចិត្រសាល'),
-                              duration: Duration(seconds: 1),
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(width: 48),
-                      _buildBottomAction(
-                        icon: Icons.upload_rounded,
-                        label: 'ចែករំលែក',
-                        onTap: _showShareDialog,
-                      ),
-                    ],
+                  // Bottom Action Buttons
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildBottomAction(
+                          icon: Icons.file_download_outlined,
+                          label: 'ទាញយក',
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('បានរក្សាទុកក្នុងវិចិត្រសាល'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 48),
+                        _buildBottomAction(
+                          icon: Icons.upload_rounded,
+                          label: 'ចែករំលែក',
+                          onTap: _showShareDialog,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

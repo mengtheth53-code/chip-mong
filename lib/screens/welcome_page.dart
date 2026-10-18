@@ -122,14 +122,18 @@ class WelcomePage extends StatelessWidget {
                       // ── Hero text
                       const Spacer(),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 180, 48),
-                        child: Text(
-                          'គ្រប់គ្រង ហិរញ្ញវត្ថុ និងបង្កើនប្រាក់របស់អ្នក',
-                          style: GoogleFonts.battambang(
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            fontSize: 45,
-                            fontWeight: FontWeight.bold,
-                            height: 1.50,
+                        padding: const EdgeInsets.fromLTRB(20, 0, 160, 24),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'គ្រប់គ្រង ហិរញ្ញវត្ថុ\nនិងបង្កើនប្រាក់របស់អ្នក',
+                            style: GoogleFonts.battambang(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              height: 1.40,
+                            ),
                           ),
                         ),
                       ),

@@ -131,12 +131,17 @@ class _CampusHubScreenState extends State<CampusHubScreen> with SingleTickerProv
             color: Colors.grey.shade700,
           ),
         ),
-        Text(
-          value,
-          style: GoogleFonts.roboto(
-            fontSize: 14,
-            fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
-            color: isBold ? const Color(0xFF0FA958) : Colors.black87,
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            value,
+            textAlign: TextAlign.right,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.roboto(
+              fontSize: 13.5,
+              fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
+              color: isBold ? const Color(0xFF0FA958) : Colors.black87,
+            ),
           ),
         ),
       ],
