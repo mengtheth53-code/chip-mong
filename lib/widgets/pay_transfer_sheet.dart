@@ -124,68 +124,75 @@ class PayAndTransferSheet extends StatelessWidget {
 
             // Grid Row 1 (4 columns)
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSmallActionItem(
-                  badge: _buildCircularBadge(
-                    color: const Color(0xFFE52329),
-                    child: const Icon(
-                      Icons.stars_rounded,
-                      color: Colors.white,
-                      size: 26,
+                Expanded(
+                  child: _buildSmallActionItem(
+                    badge: _buildCircularBadge(
+                      color: const Color(0xFFE52329),
+                      child: const Icon(
+                        Icons.stars_rounded,
+                        color: Colors.white,
+                        size: 26,
+                      ),
                     ),
+                    label: AppLanguage.tr(
+                      km: 'ផ្ទេរប្រាក់ទៅ\nគណនីបាគង',
+                      en: 'Bakong\nTransfer',
+                    ),
+                    onTap: () {},
                   ),
-                  label: AppLanguage.tr(
-                    km: 'ផ្ទេរប្រាក់ទៅ\nគណនីបាគង',
-                    en: 'Bakong\nTransfer',
-                  ),
-                  onTap: () {},
                 ),
-                _buildSmallActionItem(
-                  badge: _buildCircularBadge(
-                    color: const Color(0xFF0C8A4A),
-                    child: const Icon(
-                      Icons.account_balance_rounded,
-                      color: Colors.white,
-                      size: 24,
+                Expanded(
+                  child: _buildSmallActionItem(
+                    badge: _buildCircularBadge(
+                      color: const Color(0xFF0C8A4A),
+                      child: const Icon(
+                        Icons.account_balance_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
                     ),
+                    label: AppLanguage.tr(
+                      km: 'ផ្ទេរប្រាក់ទៅ\nគណនីធនាគារ',
+                      en: 'Bank\nTransfer',
+                    ),
+                    onTap: () {},
                   ),
-                  label: AppLanguage.tr(
-                    km: 'ផ្ទេរប្រាក់ទៅ\nគណនីធនាគារ',
-                    en: 'Bank\nTransfer',
-                  ),
-                  onTap: () {},
                 ),
-                _buildSmallActionItem(
-                  badge: _buildCircularBadge(
-                    color: const Color(0xFF22A3C4),
-                    child: const Icon(
-                      Icons.upload_rounded,
-                      color: Colors.white,
-                      size: 26,
+                Expanded(
+                  child: _buildSmallActionItem(
+                    badge: _buildCircularBadge(
+                      color: const Color(0xFF22A3C4),
+                      child: const Icon(
+                        Icons.upload_rounded,
+                        color: Colors.white,
+                        size: 26,
+                      ),
                     ),
+                    label: AppLanguage.tr(
+                      km: 'ដកប្រាក់ដោយ\nគ្មានប័ណ្ណ',
+                      en: 'Cardless\nWithdrawal',
+                    ),
+                    onTap: () {},
                   ),
-                  label: AppLanguage.tr(
-                    km: 'ដកប្រាក់ដោយ\nគ្មានប័ណ្ណ',
-                    en: 'Cardless\nWithdrawal',
-                  ),
-                  onTap: () {},
                 ),
-                _buildSmallActionItem(
-                  badge: _buildCircularBadge(
-                    color: const Color(0xFF1E88E5),
-                    child: const Icon(
-                      Icons.language_rounded,
-                      color: Colors.white,
-                      size: 26,
+                Expanded(
+                  child: _buildSmallActionItem(
+                    badge: _buildCircularBadge(
+                      color: const Color(0xFF1E88E5),
+                      child: const Icon(
+                        Icons.language_rounded,
+                        color: Colors.white,
+                        size: 26,
+                      ),
                     ),
+                    label: AppLanguage.tr(
+                      km: 'ផ្ទេរប្រាក់\nក្រៅប្រទេស...',
+                      en: 'Overseas\nTransfer',
+                    ),
+                    onTap: () {},
                   ),
-                  label: AppLanguage.tr(
-                    km: 'ផ្ទេរប្រាក់\nក្រៅប្រទេស...',
-                    en: 'Overseas\nTransfer',
-                  ),
-                  onTap: () {},
                 ),
               ],
             ),
@@ -193,11 +200,9 @@ class PayAndTransferSheet extends StatelessWidget {
 
             // Grid Row 2 (4 columns)
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width - 32) / 4,
+                Expanded(
                   child: _buildSmallActionItem(
                     badge: _buildCircularBadge(
                       color: const Color(0xFF1EA75B),
@@ -221,8 +226,7 @@ class PayAndTransferSheet extends StatelessWidget {
                     },
                   ),
                 ),
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width - 32) / 4,
+                Expanded(
                   child: _buildSmallActionItem(
                     badge: Container(
                       width: 52,
@@ -267,8 +271,7 @@ class PayAndTransferSheet extends StatelessWidget {
                     },
                   ),
                 ),
-                SizedBox(
-                  width: (MediaQuery.of(context).size.width - 32) / 4,
+                Expanded(
                   child: _buildSmallActionItem(
                     badge: Container(
                       width: 52,
@@ -302,6 +305,9 @@ class PayAndTransferSheet extends StatelessWidget {
                     ),
                     onTap: () {},
                   ),
+                ),
+                const Expanded(
+                  child: SizedBox.shrink(),
                 ),
               ],
             ),

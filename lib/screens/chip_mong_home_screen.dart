@@ -480,20 +480,23 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            AppLanguage.tr(
-              km: "សមាជិកចាប់តាំងពីឆ្នាំ '2026",
-              en: "Member since '2026",
+          Flexible(
+            child: Text(
+              AppLanguage.tr(
+                km: "សមាជិកចាប់តាំងពីឆ្នាំ '2026",
+                en: "Member since '2026",
+              ),
+              overflow: TextOverflow.ellipsis,
+              style: AppLanguage.isKhmer
+                  ? GoogleFonts.battambang(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 13.5,
+                    )
+                  : GoogleFonts.roboto(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 13.5,
+                    ),
             ),
-            style: AppLanguage.isKhmer
-                ? GoogleFonts.battambang(
-                    color: Colors.white.withValues(alpha: 0.85),
-                    fontSize: 13.5,
-                  )
-                : GoogleFonts.roboto(
-                    color: Colors.white.withValues(alpha: 0.85),
-                    fontSize: 13.5,
-                  ),
           ),
           GestureDetector(
             onTap: () => _openDestination(_AppDestination.service),
