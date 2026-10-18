@@ -5,6 +5,7 @@ import '../screens/chip_mong_transfer_screen.dart';
 import '../screens/edc_payment_screen.dart';
 import '../screens/myself_transfer_screen.dart';
 import '../screens/phone_topup_screen.dart';
+import '../theme/app_language.dart';
 
 void showPayAndTransferSheet(BuildContext context) {
   showModalBottomSheet(
@@ -37,12 +38,21 @@ class PayAndTransferSheet extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'ទូទាត់ និងផ្ទេរប្រាក់',
-                  style: GoogleFonts.battambang(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.black87,
+                  AppLanguage.tr(
+                    km: 'ទូទាត់ និងផ្ទេរប្រាក់',
+                    en: 'Pay & Transfer',
                   ),
+                  style: AppLanguage.isKhmer
+                      ? GoogleFonts.battambang(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black87,
+                        )
+                      : GoogleFonts.roboto(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.black87,
+                        ),
                 ),
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
@@ -76,7 +86,10 @@ class PayAndTransferSheet extends StatelessWidget {
                 Expanded(
                   child: _buildBigActionCard(
                     icon: Icons.person_add_alt_1_rounded,
-                    label: 'ផ្ទេរប្រាក់ទៅគណនី\nខ្លួនឯង',
+                    label: AppLanguage.tr(
+                      km: 'ផ្ទេរប្រាក់ទៅគណនី\nខ្លួនឯង',
+                      en: 'Transfer to Own\nAccount',
+                    ),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.of(context).push(
@@ -91,7 +104,10 @@ class PayAndTransferSheet extends StatelessWidget {
                 Expanded(
                   child: _buildBigActionCard(
                     icon: Icons.swap_horiz_rounded,
-                    label: 'ផ្ទេរប្រាក់ទៅគណនី ជីប\nម៉ុង ណាមួយ',
+                    label: AppLanguage.tr(
+                      km: 'ផ្ទេរប្រាក់ទៅគណនី ជីប\nម៉ុង ណាមួយ',
+                      en: 'Transfer to Chip\nMong Account',
+                    ),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.of(context).push(
@@ -120,7 +136,10 @@ class PayAndTransferSheet extends StatelessWidget {
                       size: 26,
                     ),
                   ),
-                  label: 'ផ្ទេរប្រាក់ទៅ\nគណនីបាគង',
+                  label: AppLanguage.tr(
+                    km: 'ផ្ទេរប្រាក់ទៅ\nគណនីបាគង',
+                    en: 'Bakong\nTransfer',
+                  ),
                   onTap: () {},
                 ),
                 _buildSmallActionItem(
@@ -132,7 +151,10 @@ class PayAndTransferSheet extends StatelessWidget {
                       size: 24,
                     ),
                   ),
-                  label: 'ផ្ទេរប្រាក់ទៅ\nគណនីធនាគារ',
+                  label: AppLanguage.tr(
+                    km: 'ផ្ទេរប្រាក់ទៅ\nគណនីធនាគារ',
+                    en: 'Bank\nTransfer',
+                  ),
                   onTap: () {},
                 ),
                 _buildSmallActionItem(
@@ -144,7 +166,10 @@ class PayAndTransferSheet extends StatelessWidget {
                       size: 26,
                     ),
                   ),
-                  label: 'ដកប្រាក់ដោយ\nគ្មានប័ណ្ណ',
+                  label: AppLanguage.tr(
+                    km: 'ដកប្រាក់ដោយ\nគ្មានប័ណ្ណ',
+                    en: 'Cardless\nWithdrawal',
+                  ),
                   onTap: () {},
                 ),
                 _buildSmallActionItem(
@@ -156,7 +181,10 @@ class PayAndTransferSheet extends StatelessWidget {
                       size: 26,
                     ),
                   ),
-                  label: 'ផ្ទេរប្រាក់\nក្រៅប្រទេស...',
+                  label: AppLanguage.tr(
+                    km: 'ផ្ទេរប្រាក់\nក្រៅប្រទេស...',
+                    en: 'Overseas\nTransfer',
+                  ),
                   onTap: () {},
                 ),
               ],
@@ -179,7 +207,10 @@ class PayAndTransferSheet extends StatelessWidget {
                         size: 24,
                       ),
                     ),
-                    label: 'បញ្ចូលលុយ\nទូរសព្ទ',
+                    label: AppLanguage.tr(
+                      km: 'បញ្ចូលលុយ\nទូរសព្ទ',
+                      en: 'Phone\nTop-Up',
+                    ),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.of(context).push(
@@ -222,7 +253,10 @@ class PayAndTransferSheet extends StatelessWidget {
                         ),
                       ),
                     ),
-                    label: 'អគ្គិសនីកម្ពុជា',
+                    label: AppLanguage.tr(
+                      km: 'អគ្គិសនីកម្ពុជា',
+                      en: 'EDC\nElectricity',
+                    ),
                     onTap: () {
                       Navigator.pop(context);
                       Navigator.of(context).push(
@@ -262,7 +296,10 @@ class PayAndTransferSheet extends StatelessWidget {
                         ),
                       ),
                     ),
-                    label: 'ក្រុមហ៊ុន ផ្លូវ\nល្បឿនលឿន...',
+                    label: AppLanguage.tr(
+                      km: 'ក្រុមហ៊ុន ផ្លូវ\nល្បឿនលឿន...',
+                      en: 'Expressway\nPayment',
+                    ),
                     onTap: () {},
                   ),
                 ),
@@ -309,12 +346,19 @@ class PayAndTransferSheet extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               label,
-              style: GoogleFonts.battambang(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
-                height: 1.3,
-              ),
+              style: AppLanguage.isKhmer
+                  ? GoogleFonts.battambang(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                      height: 1.3,
+                    )
+                  : GoogleFonts.roboto(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                      height: 1.25,
+                    ),
             ),
           ],
         ),
@@ -353,12 +397,19 @@ class PayAndTransferSheet extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.battambang(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-              height: 1.25,
-            ),
+            style: AppLanguage.isKhmer
+                ? GoogleFonts.battambang(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    height: 1.25,
+                  )
+                : GoogleFonts.roboto(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    height: 1.2,
+                  ),
           ),
         ],
       ),

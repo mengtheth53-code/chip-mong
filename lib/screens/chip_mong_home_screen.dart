@@ -5,6 +5,8 @@ import 'account_history_screen.dart';
 import 'account_screen.dart';
 import '../widgets/pay_transfer_sheet.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_language.dart';
+import '../widgets/language_bottom_sheet.dart';
 import 'borrow_screen.dart';
 import 'card_screen.dart';
 import 'chip_mong_map_screen.dart';
@@ -55,22 +57,26 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
     _NavItem(
       icon: Icons.home_rounded,
       label: 'ទំព័រដើម',
+      labelEn: 'Home',
       destination: null,
     ),
     _NavItem(
       icon: Icons.star_border_rounded,
       label: 'អត្ថប្រយោជន៍',
+      labelEn: 'Promos',
       destination: _AppDestination.promotion,
     ),
     _NavItem(icon: Icons.qr_code_scanner, label: '', isQr: true),
     _NavItem(
       icon: Icons.savings_outlined,
       label: 'ដកប្រាក់',
+      labelEn: 'Cash Out',
       destination: _AppDestination.deposit,
     ),
     _NavItem(
       icon: Icons.headset_mic_outlined,
       label: 'សេវាកម្មអតិថិជន',
+      labelEn: 'Support',
       destination: _AppDestination.support,
     ),
   ];
@@ -79,46 +85,55 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
     _ServiceItem(
       icon: Icons.swap_horiz_rounded,
       label: 'ផ្ទេរប្រាក់',
+      labelEn: 'Transfer',
       destination: _AppDestination.transfer,
     ),
     _ServiceItem(
       icon: Icons.receipt_long_rounded,
       label: 'ការទូទាត់',
+      labelEn: 'Payments',
       destination: _AppDestination.paymentPage,
     ),
     _ServiceItem(
       icon: Icons.phone_android_rounded,
       label: 'បញ្ចូលលុយទូរស័ព្ទ',
+      labelEn: 'Top-Up',
       destination: _AppDestination.topup,
     ),
     _ServiceItem(
       icon: Icons.local_atm_rounded,
       label: 'ដកប្រាក់រហ័ស',
+      labelEn: 'Cash Out',
       destination: _AppDestination.deposit,
     ),
     _ServiceItem(
       icon: Icons.account_balance_wallet_rounded,
       label: 'គណនី',
+      labelEn: 'Accounts',
       destination: _AppDestination.account,
     ),
     _ServiceItem(
       icon: Icons.savings_rounded,
       label: 'កម្ចី',
+      labelEn: 'Loans',
       destination: _AppDestination.borrow,
     ),
     _ServiceItem(
       icon: Icons.credit_card_rounded,
       label: 'ប័ណ្ណ',
+      labelEn: 'Cards',
       destination: _AppDestination.card,
     ),
     _ServiceItem(
       icon: Icons.savings_outlined,
       label: 'សន្សំ',
+      labelEn: 'Deposits',
       destination: _AppDestination.termDeposit,
     ),
     _ServiceItem(
       icon: Icons.apps_rounded,
       label: 'ផ្សេងៗ',
+      labelEn: 'More',
       destination: _AppDestination.service,
     ),
   ];
@@ -127,103 +142,121 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
     _QuickAction(
       icon: Icons.lightbulb_rounded,
       label: 'នវានុវត្តន៍ទាំង ៥',
+      labelEn: '5 Innovations',
       destination: _AppDestination.innovationHub,
     ),
     _QuickAction(
       icon: Icons.fingerprint_rounded,
       label: 'ជីវមាត្រ Biometric',
+      labelEn: 'Biometric Pay',
       destination: _AppDestination.biometricAuth,
     ),
     _QuickAction(
       icon: Icons.psychology_rounded,
       label: 'AI ជំនួយការ',
+      labelEn: 'AI Assistant',
       destination: _AppDestination.aiAssistant,
     ),
     _QuickAction(
       icon: Icons.school_rounded,
       label: 'Campus Hub',
+      labelEn: 'Campus Hub',
       destination: _AppDestination.campusHub,
     ),
     _QuickAction(
       icon: Icons.bolt_rounded,
       label: 'AI ឥណទាន',
+      labelEn: 'Smart Credit',
       destination: _AppDestination.smartCredit,
     ),
     _QuickAction(
       icon: Icons.savings_rounded,
       label: 'សន្សំប្រចាំថ្ងៃ',
+      labelEn: 'Daily Savings',
       destination: _AppDestination.dailyAutoSavings,
     ),
     _QuickAction(
       icon: Icons.groups_rounded,
       label: 'សន្សំរួមគ្នា',
+      labelEn: 'Shared Savings',
       destination: _AppDestination.sharedSavings,
     ),
     _QuickAction(
       icon: Icons.calendar_month_rounded,
       label: 'កាលវិភាគ',
+      labelEn: 'Schedule',
       destination: _AppDestination.schedule,
     ),
     _QuickAction(
       icon: Icons.currency_exchange_rounded,
       label: 'អត្រាប្ដូរប្រាក់',
+      labelEn: 'Exchange Rates',
       destination: _AppDestination.exchangeRates,
     ),
     _QuickAction(
       icon: Icons.location_on_rounded,
       label: 'ទីតាំង',
+      labelEn: 'ATM & Branches',
       destination: _AppDestination.location,
     ),
     _QuickAction(
       icon: Icons.receipt_long,
       label: 'សៀវភៅមូលប្បទានប័ត្រ',
+      labelEn: 'Cheque Book',
       destination: _AppDestination.chequeBook,
     ),
     _QuickAction(
       icon: Icons.credit_card,
       label: 'ប័ណ្ណថ្មី',
+      labelEn: 'New Card',
       destination: _AppDestination.card,
     ),
     _QuickAction(
       icon: Icons.account_balance_wallet,
       label: 'គណនីថ្មី',
+      labelEn: 'Open Account',
       destination: _AppDestination.openAccount,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.homeBackground,
-      body: Column(
-        children: [
-          _buildTopSection(),
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(color: AppColors.homeBackground),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildGreetingHeader(),
-                    _buildAccountCard(),
-                    _buildInnovationHubBanner(),
-                    _buildBankingServices(),
-                    _buildQuickActions(),
-                    _buildBannerSection(),
-                    _buildFrequentTransactions(),
-                    _buildRecentTransactions(),
-                    _buildFavorites(),
-                    _buildOtherServices(),
-                    _buildCustomizeAppCard(),
-                    const SizedBox(height: 24),
-                  ],
+    return ValueListenableBuilder<String>(
+      valueListenable: AppLanguage.languageNotifier,
+      builder: (context, _, __) {
+        return Scaffold(
+          backgroundColor: AppColors.homeBackground,
+          body: Column(
+            children: [
+              _buildTopSection(),
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(color: AppColors.homeBackground),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _buildGreetingHeader(),
+                        _buildAccountCard(),
+                        _buildInnovationHubBanner(),
+                        _buildBankingServices(),
+                        _buildQuickActions(),
+                        _buildBannerSection(),
+                        _buildFrequentTransactions(),
+                        _buildRecentTransactions(),
+                        _buildFavorites(),
+                        _buildOtherServices(),
+                        _buildCustomizeAppCard(),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+              _buildBottomNav(),
+            ],
           ),
-          _buildBottomNav(),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -369,6 +402,50 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
               ),
             ),
             const Spacer(),
+            // Language Switcher Pill
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                showLanguageBottomSheet(
+                  context,
+                  currentLanguage: AppLanguage.currentLanguage,
+                  onLanguageSelected: (newLang) {
+                    AppLanguage.setLanguage(newLang);
+                  },
+                );
+              },
+              child: Container(
+                height: 38,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      AppLanguage.isKhmer ? '🇰🇭' : '🇺🇸',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      AppLanguage.isKhmer ? 'ខ្មែរ' : 'EN',
+                      style: GoogleFonts.battambang(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             _buildTopIconBtn(
               icon: Icons.notifications_none_rounded,
               onTap: () => _openDestination(_AppDestination.message),
@@ -404,11 +481,19 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "សមាជិកចាប់តាំងពីឆ្នាំ '2026",
-            style: GoogleFonts.battambang(
-              color: Colors.white.withValues(alpha: 0.85),
-              fontSize: 13.5,
+            AppLanguage.tr(
+              km: "សមាជិកចាប់តាំងពីឆ្នាំ '2026",
+              en: "Member since '2026",
             ),
+            style: AppLanguage.isKhmer
+                ? GoogleFonts.battambang(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    fontSize: 13.5,
+                  )
+                : GoogleFonts.roboto(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    fontSize: 13.5,
+                  ),
           ),
           GestureDetector(
             onTap: () => _openDestination(_AppDestination.service),
@@ -427,12 +512,18 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                   const Icon(Icons.add, color: Colors.white, size: 16),
                   const SizedBox(width: 4),
                   Text(
-                    'សេវាកម្មរហ័ស',
-                    style: GoogleFonts.battambang(
-                      color: Colors.white,
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    AppLanguage.tr(km: 'សេវាកម្មរហ័ស', en: 'Quick Services'),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            color: Colors.white,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                          )
+                        : GoogleFonts.roboto(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
                   ),
                 ],
               ),
@@ -515,12 +606,18 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'គណនីគោល',
-                        style: GoogleFonts.battambang(
-                          fontSize: 15,
-                          color: AppColors.primaryGreen,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        AppLanguage.tr(km: 'គណនីគោល', en: 'Primary'),
+                        style: AppLanguage.isKhmer
+                            ? GoogleFonts.battambang(
+                                fontSize: 15,
+                                color: AppColors.primaryGreen,
+                                fontWeight: FontWeight.w600,
+                              )
+                            : GoogleFonts.roboto(
+                                fontSize: 13,
+                                color: AppColors.primaryGreen,
+                                fontWeight: FontWeight.bold,
+                              ),
                       ),
                     ),
                   ),
@@ -608,12 +705,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            'ទូទាត់ និងផ្ទេរប្រាក់',
-                            style: GoogleFonts.battambang(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.primaryGreen,
+                            AppLanguage.tr(
+                              km: 'ទូទាត់ និងផ្ទេរប្រាក់',
+                              en: 'Pay & Transfer',
                             ),
+                            style: AppLanguage.isKhmer
+                                ? GoogleFonts.battambang(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primaryGreen,
+                                  )
+                                : GoogleFonts.roboto(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primaryGreen,
+                                  ),
                           ),
                         ],
                       ),
@@ -720,21 +826,39 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
 
                 // Main Title & Subtitle
                 Text(
-                  'គំនិតនវានុវត្តន៍ទាំង ៥ សម្រាប់ធនាគារ ជីប ម៉ុង',
-                  style: GoogleFonts.battambang(
-                    color: Colors.white,
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w700,
+                  AppLanguage.tr(
+                    km: 'គំនិតនវានុវត្តន៍ទាំង ៥ សម្រាប់ធនាគារ ជីប ម៉ុង',
+                    en: '5 Product Innovations for Chip Mong Bank',
                   ),
+                  style: AppLanguage.isKhmer
+                      ? GoogleFonts.battambang(
+                          color: Colors.white,
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.w700,
+                        )
+                      : GoogleFonts.roboto(
+                          color: Colors.white,
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.w700,
+                        ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'ដំណោះស្រាយ Biometrics ចូលប្រើនិងទូទាត់, AI ឥណទាន, Campus Hub, និងការសន្សំស្វ័យប្រវត្ត',
-                  style: GoogleFonts.battambang(
-                    color: Colors.white.withValues(alpha: 0.85),
-                    fontSize: 11.5,
-                    height: 1.4,
+                  AppLanguage.tr(
+                    km: 'ដំណោះស្រាយ Biometrics ចូលប្រើនិងទូទាត់, AI ឥណទាន, Campus Hub, និងការសន្សំស្វ័យប្រវត្ត',
+                    en: 'Biometric QuickPay, Smart Credit, Campus Hub, Shared Vault & Auto-Save',
                   ),
+                  style: AppLanguage.isKhmer
+                      ? GoogleFonts.battambang(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 11.5,
+                          height: 1.4,
+                        )
+                      : GoogleFonts.roboto(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontSize: 11.5,
+                          height: 1.4,
+                        ),
                 ),
                 const SizedBox(height: 14),
 
@@ -800,13 +924,22 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                       children: [
                         Flexible(
                           child: Text(
-                            'បើកមើលបទបង្ហាញពេញលេញ (Open Full Presentation)',
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.battambang(
-                              color: Colors.white,
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w600,
+                            AppLanguage.tr(
+                              km: 'បើកមើលបទបង្ហាញពេញលេញ (Open Full Presentation)',
+                              en: 'View Full Innovation Presentation',
                             ),
+                            overflow: TextOverflow.ellipsis,
+                            style: AppLanguage.isKhmer
+                                ? GoogleFonts.battambang(
+                                    color: Colors.white,
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                  )
+                                : GoogleFonts.roboto(
+                                    color: Colors.white,
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                           ),
                         ),
                         const SizedBox(width: 6),
@@ -872,12 +1005,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
             child: Text(
-              'សេវាកម្មធនាគារ',
-              style: GoogleFonts.battambang(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
+              AppLanguage.tr(
+                km: 'សេវាកម្មធនាគារ',
+                en: 'Banking Services',
               ),
+              style: AppLanguage.isKhmer
+                  ? GoogleFonts.battambang(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    )
+                  : GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                    ),
             ),
           ),
           Container(
@@ -920,15 +1062,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        service.label,
+                        service.localizedLabel,
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.battambang(
-                          fontSize: 14.5,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
+                        style: AppLanguage.isKhmer
+                            ? GoogleFonts.battambang(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              )
+                            : GoogleFonts.roboto(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
                       ),
                     ],
                   ),
@@ -959,7 +1107,7 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
             final action = _quickActions[index];
             return GestureDetector(
               onTap: () {
-                if (action.label == 'ទីតាំង') {
+                if (action.destination == _AppDestination.location || action.label == 'ទីតាំង') {
                   _openScreen(const ChipMongMapScreen());
                 } else if (action.destination != null) {
                   _openDestination(action.destination);
@@ -967,8 +1115,12 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'សេវាកម្ម ${action.label}',
-                        style: GoogleFonts.battambang(),
+                        AppLanguage.isEnglish
+                            ? 'Service: ${action.localizedLabel}'
+                            : 'សេវាកម្ម ${action.localizedLabel}',
+                        style: AppLanguage.isKhmer
+                            ? GoogleFonts.battambang()
+                            : GoogleFonts.roboto(),
                       ),
                     ),
                   );
@@ -1004,12 +1156,18 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      action.label,
-                      style: GoogleFonts.battambang(
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                      ),
+                      action.localizedLabel,
+                      style: AppLanguage.isKhmer
+                          ? GoogleFonts.battambang(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            )
+                          : GoogleFonts.roboto(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
                     ),
                   ],
                 ),
@@ -1417,12 +1575,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ប្រតិបត្តិការញឹកញាប់',
-            style: GoogleFonts.battambang(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
+            AppLanguage.tr(
+              km: 'ប្រតិបត្តិការញឹកញាប់',
+              en: 'Frequent Transactions',
             ),
+            style: AppLanguage.isKhmer
+                ? GoogleFonts.battambang(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                  )
+                : GoogleFonts.roboto(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
           ),
           const SizedBox(height: 14),
           Row(
@@ -1434,12 +1601,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
               ),
               const SizedBox(width: 10),
               Text(
-                'មិនមានប្រតិបត្តិការទេ',
-                style: GoogleFonts.battambang(
-                  color: Colors.white,
-                  fontSize: 16.5,
-                  fontWeight: FontWeight.w500,
+                AppLanguage.tr(
+                  km: 'មិនមានប្រតិបត្តិការទេ',
+                  en: 'No frequent transactions',
                 ),
+                style: AppLanguage.isKhmer
+                    ? GoogleFonts.battambang(
+                        color: Colors.white,
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.w500,
+                      )
+                    : GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
               ),
             ],
           ),
@@ -1452,17 +1628,23 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
     final transactions = [
       {
         'title': 'THETH MENG',
-        'date': 'សីហា 05, 2026 | 02:55 PM',
+        'date': AppLanguage.isEnglish
+            ? 'Aug 05, 2026 | 02:55 PM'
+            : 'សីហា 05, 2026 | 02:55 PM',
         'amount': '-20,000 ៛',
       },
       {
         'title': 'THETH MENG',
-        'date': 'សីហា 05, 2026 | 02:55 PM',
+        'date': AppLanguage.isEnglish
+            ? 'Aug 05, 2026 | 02:55 PM'
+            : 'សីហា 05, 2026 | 02:55 PM',
         'amount': '-50,000 ៛',
       },
       {
         'title': 'THETH MENG',
-        'date': 'សីហា 05, 2026 | 01:48 PM',
+        'date': AppLanguage.isEnglish
+            ? 'Aug 05, 2026 | 01:48 PM'
+            : 'សីហា 05, 2026 | 01:48 PM',
         'amount': '-100,000 ៛',
       },
     ];
@@ -1479,12 +1661,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
             child: Text(
-              'ប្រតិបត្តិការថ្មីៗ',
-              style: GoogleFonts.battambang(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
+              AppLanguage.tr(
+                km: 'ប្រតិបត្តិការថ្មីៗ',
+                en: 'Recent Transactions',
               ),
+              style: AppLanguage.isKhmer
+                  ? GoogleFonts.battambang(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                    )
+                  : GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
             ),
           ),
           Container(
@@ -1634,12 +1825,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'គំរូទូទាត់',
-                style: GoogleFonts.battambang(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                AppLanguage.tr(
+                  km: 'គំរូទូទាត់',
+                  en: 'Templates',
                 ),
+                style: AppLanguage.isKhmer
+                    ? GoogleFonts.battambang(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      )
+                    : GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
               ),
               GestureDetector(
                 onTap: () => _openScreen(const CreatePaymentTemplateScreen()),
@@ -1653,12 +1853,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '+ បន្ថែម',
-                    style: GoogleFonts.battambang(
-                      color: const Color(0xFF0C8A4A),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                    AppLanguage.tr(
+                      km: '+ បន្ថែម',
+                      en: '+ Add',
                     ),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            color: const Color(0xFF0C8A4A),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          )
+                        : GoogleFonts.roboto(
+                            color: const Color(0xFF0C8A4A),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
                   ),
                 ),
               ),
@@ -1674,12 +1883,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
               ),
               const SizedBox(width: 10),
               Text(
-                'មិនមានគំរូទូទាត់',
-                style: GoogleFonts.battambang(
-                  color: Colors.white,
-                  fontSize: 16.5,
-                  fontWeight: FontWeight.w500,
+                AppLanguage.tr(
+                  km: 'មិនមានគំរូទូទាត់',
+                  en: 'No templates available',
                 ),
+                style: AppLanguage.isKhmer
+                    ? GoogleFonts.battambang(
+                        color: Colors.white,
+                        fontSize: 16.5,
+                        fontWeight: FontWeight.w500,
+                      )
+                    : GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
               ),
             ],
           ),
@@ -1703,12 +1921,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'សេវាកម្មផ្សេងៗ',
-                style: GoogleFonts.battambang(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
+                AppLanguage.tr(
+                  km: 'សេវាកម្មផ្សេងៗ',
+                  en: 'Other Services',
                 ),
+                style: AppLanguage.isKhmer
+                    ? GoogleFonts.battambang(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      )
+                    : GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
               ),
               GestureDetector(
                 onTap: () => showQuickServicesSheet(context),
@@ -1722,12 +1949,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    'បង្ហាញទាំងអស់',
-                    style: GoogleFonts.battambang(
-                      color: const Color(0xFF0C8A4A),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                    AppLanguage.tr(
+                      km: 'បង្ហាញទាំងអស់',
+                      en: 'View All',
                     ),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            color: const Color(0xFF0C8A4A),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          )
+                        : GoogleFonts.roboto(
+                            color: const Color(0xFF0C8A4A),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                          ),
                   ),
                 ),
               ),
@@ -1817,21 +2053,39 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'កែប្រែកម្មវិធីរបស់អ្នក',
-            style: GoogleFonts.battambang(
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
-              color: const Color(0xFF1F2937),
+            AppLanguage.tr(
+              km: 'កែប្រែកម្មវិធីរបស់អ្នក',
+              en: 'Customize Your App',
             ),
+            style: AppLanguage.isKhmer
+                ? GoogleFonts.battambang(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF1F2937),
+                  )
+                : GoogleFonts.roboto(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF1F2937),
+                  ),
           ),
           const SizedBox(height: 6),
           Text(
-            'កំណត់ឥឡូវនេះដើម្បីប្រើប្រាស់ផ្ទាំងវិជិតនិងម៉ូតរចនាកាតជាច្រើន ដែលមាននៅក្នុងកម្មវិធីរបស់អ្នក។',
-            style: GoogleFonts.battambang(
-              fontSize: 13,
-              color: const Color(0xFF6B7280),
-              height: 1.45,
+            AppLanguage.tr(
+              km: 'កំណត់ឥឡូវនេះដើម្បីប្រើប្រាស់ផ្ទាំងវិជិតនិងម៉ូតរចនាកាតជាច្រើន ដែលមាននៅក្នុងកម្មវិធីរបស់អ្នក។',
+              en: 'Customize widgets and card styles inside your mobile app.',
             ),
+            style: AppLanguage.isKhmer
+                ? GoogleFonts.battambang(
+                    fontSize: 13,
+                    color: const Color(0xFF6B7280),
+                    height: 1.45,
+                  )
+                : GoogleFonts.roboto(
+                    fontSize: 12.5,
+                    color: const Color(0xFF6B7280),
+                    height: 1.35,
+                  ),
           ),
           const SizedBox(height: 14),
           Row(
@@ -1841,8 +2095,13 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'មុខងារកែប្រែផ្ទាំងវិជិត និងម៉ូតរចនាកាត',
-                        style: GoogleFonts.battambang(),
+                        AppLanguage.tr(
+                          km: 'មុខងារកែប្រែផ្ទាំងវិជិត និងម៉ូតរចនាកាត',
+                          en: 'Widget and card styling customization feature',
+                        ),
+                        style: AppLanguage.isKhmer
+                            ? GoogleFonts.battambang()
+                            : GoogleFonts.roboto(),
                       ),
                     ),
                   );
@@ -1857,12 +2116,21 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                     borderRadius: BorderRadius.circular(18),
                   ),
                   child: Text(
-                    'កំណត់ឥឡូវនេះ',
-                    style: GoogleFonts.battambang(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF0C8A4A),
+                    AppLanguage.tr(
+                      km: 'កំណត់ឥឡូវនេះ',
+                      en: 'Set Up Now',
                     ),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF0C8A4A),
+                          )
+                        : GoogleFonts.roboto(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF0C8A4A),
+                          ),
                   ),
                 ),
               ),
@@ -1995,17 +2263,27 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        tab.label,
+                        tab.localizedLabel,
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.battambang(
-                          fontSize: 13,
-                          fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w400,
-                          color: isSelected
-                              ? AppColors.primaryGreen
-                              : Colors.grey.shade400,
-                        ),
+                        style: AppLanguage.isKhmer
+                            ? GoogleFonts.battambang(
+                                fontSize: 13,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w400,
+                                color: isSelected
+                                    ? AppColors.primaryGreen
+                                    : Colors.grey.shade400,
+                              )
+                            : GoogleFonts.roboto(
+                                fontSize: 11.5,
+                                fontWeight: isSelected
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                                color: isSelected
+                                    ? AppColors.primaryGreen
+                                    : Colors.grey.shade400,
+                              ),
                       ),
                     ],
                   ),
@@ -2022,39 +2300,54 @@ class _ChipMongHomeScreenState extends State<ChipMongHomeScreen> {
 class _NavItem {
   final IconData icon;
   final String label;
+  final String? labelEn;
   final bool isQr;
   final _AppDestination? destination;
 
   const _NavItem({
     required this.icon,
     required this.label,
+    this.labelEn,
     this.isQr = false,
     this.destination,
   });
+
+  String get localizedLabel =>
+      AppLanguage.isKhmer ? label : (labelEn ?? label);
 }
 
 class _ServiceItem {
   final IconData icon;
   final String label;
+  final String? labelEn;
   final _AppDestination destination;
 
   const _ServiceItem({
     required this.icon,
     required this.label,
+    this.labelEn,
     required this.destination,
   });
+
+  String get localizedLabel =>
+      AppLanguage.isKhmer ? label : (labelEn ?? label);
 }
 
 class _QuickAction {
   final IconData icon;
   final String label;
+  final String? labelEn;
   final _AppDestination? destination;
 
   const _QuickAction({
     required this.icon,
     required this.label,
+    this.labelEn,
     this.destination,
   });
+
+  String get localizedLabel =>
+      AppLanguage.isKhmer ? label : (labelEn ?? label);
 }
 
 enum _AppDestination {

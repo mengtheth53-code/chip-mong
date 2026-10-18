@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../theme/app_language.dart';
+
 void showQuickServicesSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -84,21 +86,39 @@ class _ServiceScreenState extends State<ServiceScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'សេវាកម្មរហ័ស',
-                      style: GoogleFonts.battambang(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black87,
+                      AppLanguage.tr(
+                        km: 'សេវាកម្មរហ័ស',
+                        en: 'Quick Services',
                       ),
+                      style: AppLanguage.isKhmer
+                          ? GoogleFonts.battambang(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black87,
+                            )
+                          : GoogleFonts.roboto(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black87,
+                            ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'អ្នកអាចបន្ថែមសេវាកម្មចំនួន 5 ដែលអ្នកធ្វើប្រតិបត្តិការជាញឹកញាប់',
-                      style: GoogleFonts.battambang(
-                        fontSize: 13,
-                        color: const Color(0xFF64748B),
-                        height: 1.4,
+                      AppLanguage.tr(
+                        km: 'អ្នកអាចបន្ថែមសេវាកម្មចំនួន 5 ដែលអ្នកធ្វើប្រតិបត្តិការជាញឹកញាប់',
+                        en: 'You can add up to 5 frequently used services for quick access',
                       ),
+                      style: AppLanguage.isKhmer
+                          ? GoogleFonts.battambang(
+                              fontSize: 13,
+                              color: const Color(0xFF64748B),
+                              height: 1.4,
+                            )
+                          : GoogleFonts.roboto(
+                              fontSize: 12.5,
+                              color: const Color(0xFF64748B),
+                              height: 1.35,
+                            ),
                     ),
                   ],
                 ),
@@ -137,12 +157,21 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 children: [
                   // Section 1: សេវាកម្ម
                   Text(
-                    'សេវាកម្ម',
-                    style: GoogleFonts.battambang(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
+                    AppLanguage.tr(
+                      km: 'សេវាកម្ម',
+                      en: 'Selected Services',
                     ),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                          )
+                        : GoogleFonts.roboto(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                          ),
                   ),
                   const SizedBox(height: 10),
                   _buildSelectedServicesSection(),
@@ -150,12 +179,21 @@ class _ServiceScreenState extends State<ServiceScreen> {
 
                   // Section 2: សេវាកម្មផ្សេងៗ
                   Text(
-                    'សេវាកម្មផ្សេងៗ',
-                    style: GoogleFonts.battambang(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
+                    AppLanguage.tr(
+                      km: 'សេវាកម្មផ្សេងៗ',
+                      en: 'Other Services',
                     ),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                          )
+                        : GoogleFonts.roboto(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black87,
+                          ),
                   ),
                   const SizedBox(height: 10),
                   _buildAvailableServicesSection(),
@@ -207,22 +245,41 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'មិនទាន់មានការកំណត់សេវាកម្ម\nនៅឡើយទេ',
-                    style: GoogleFonts.battambang(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF1E293B),
-                      height: 1.35,
+                    AppLanguage.tr(
+                      km: 'មិនទាន់មានការកំណត់សេវាកម្ម\nនៅឡើយទេ',
+                      en: 'No quick services configured yet',
                     ),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1E293B),
+                            height: 1.35,
+                          )
+                        : GoogleFonts.roboto(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFF1E293B),
+                            height: 1.25,
+                          ),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'ចុចប៊ូតុង "+" ដើម្បីធ្វើការដាក់បញ្ចូលសេវាកម្មដែលអ្នកធ្វើប្រតិបត្តិការ ញឹកញាប់ សម្រាប់ចូលដំណើរការសេវាកម្មរហ័ស',
-                    style: GoogleFonts.battambang(
-                      fontSize: 13,
-                      color: const Color(0xFF64748B),
-                      height: 1.45,
+                    AppLanguage.tr(
+                      km: 'ចុចប៊ូតុង "+" ដើម្បីធ្វើការដាក់បញ្ចូលសេវាកម្មដែលអ្នកធ្វើប្រតិបត្តិការ ញឹកញាប់ សម្រាប់ចូលដំណើរការសេវាកម្មរហ័ស',
+                      en: 'Tap the "+" button below to add your frequently used services for faster access',
                     ),
+                    style: AppLanguage.isKhmer
+                        ? GoogleFonts.battambang(
+                            fontSize: 13,
+                            color: const Color(0xFF64748B),
+                            height: 1.45,
+                          )
+                        : GoogleFonts.roboto(
+                            fontSize: 12.5,
+                            color: const Color(0xFF64748B),
+                            height: 1.35,
+                          ),
                   ),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_language.dart';
 
 class MyProfileScreen extends StatelessWidget {
   const MyProfileScreen({super.key});
@@ -9,37 +10,53 @@ class MyProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bgGray,
-      body: Column(
-        children: [
-          _buildHeader(context),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'ព័ត៌មានផ្ទាល់ខ្លួន',
-                    style: GoogleFonts.battambang(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF1E293B),
-                    ),
+    return ValueListenableBuilder<String>(
+      valueListenable: AppLanguage.languageNotifier,
+      builder: (context, _, __) {
+        final isKhmer = AppLanguage.isKhmer;
+
+        return Scaffold(
+          backgroundColor: _bgGray,
+          body: Column(
+            children: [
+              _buildHeader(context, isKhmer),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLanguage.tr(
+                          km: 'ព័ត៌មានផ្ទាល់ខ្លួន',
+                          en: 'Personal Information',
+                        ),
+                        style: isKhmer
+                            ? GoogleFonts.battambang(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1E293B),
+                              )
+                            : GoogleFonts.roboto(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1E293B),
+                              ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildPersonalInfoCard(isKhmer),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  _buildPersonalInfoCard(),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isKhmer) {
     return Container(
       color: _green,
       child: SafeArea(
@@ -63,12 +80,18 @@ class MyProfileScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'ប្រវត្តិរូបរបស់ខ្ញុំ',
-                    style: GoogleFonts.battambang(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    AppLanguage.myProfile,
+                    style: isKhmer
+                        ? GoogleFonts.battambang(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          )
+                        : GoogleFonts.roboto(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
                   ),
                 ],
               ),
@@ -127,12 +150,18 @@ class MyProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'លេខសម្គាល់: 0126103000082',
-                style: GoogleFonts.battambang(
-                  color: Colors.white.withValues(alpha: 0.85),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
+                AppLanguage.userId,
+                style: isKhmer
+                    ? GoogleFonts.battambang(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      )
+                    : GoogleFonts.roboto(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
               ),
             ],
           ),
@@ -141,7 +170,7 @@ class MyProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalInfoCard() {
+  Widget _buildPersonalInfoCard(bool isKhmer) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -159,39 +188,45 @@ class MyProfileScreen extends StatelessWidget {
         children: [
           _buildInfoRow(
             icon: Icons.person_outline_rounded,
-            label: 'ឈ្មោះ',
+            label: AppLanguage.tr(km: 'ឈ្មោះ', en: 'Full Name'),
             value: 'MENG THETH',
+            isKhmer: isKhmer,
           ),
           _divider(),
           _buildInfoRow(
             icon: Icons.transgender_rounded,
-            label: 'ភេទ',
-            value: 'M',
+            label: AppLanguage.tr(km: 'ភេទ', en: 'Gender'),
+            value: AppLanguage.tr(km: 'ប្រុស (M)', en: 'Male (M)'),
+            isKhmer: isKhmer,
           ),
           _divider(),
           _buildInfoRow(
             icon: Icons.description_outlined,
-            label: 'ប្រភេទឯកសារ',
-            value: 'NATIONAL_ID',
+            label: AppLanguage.tr(km: 'ប្រភេទឯកសារ', en: 'Document Type'),
+            value: AppLanguage.tr(km: 'អត្តសញ្ញាណប័ណ្ណសញ្ជាតិខ្មែរ', en: 'Cambodian National ID'),
+            isKhmer: isKhmer,
           ),
           _divider(),
           _buildInfoRow(
             icon: Icons.badge_outlined,
-            label: 'លេខអត្តសញ្ញាណប័ណ្ណ / លេខលិខិតឆ្លងដែន',
-            value: '110767382',
+            label: AppLanguage.tr(km: 'លេខអត្តសញ្ញាណប័ណ្ណ', en: 'National ID Number'),
+            value: '010892415',
+            isKhmer: isKhmer,
           ),
           _divider(),
           _buildInfoRow(
             icon: Icons.access_time_rounded,
-            label: 'កាលបរិច្ឆេទផុតកំណត់',
-            value: '2034-07-07',
+            label: AppLanguage.tr(km: 'កាលបរិច្ឆេទផុតកំណត់', en: 'Expiry Date'),
+            value: '2032-10-15',
+            isKhmer: isKhmer,
           ),
           _divider(),
           _buildInfoRow(
             icon: Icons.mail_outline_rounded,
-            label: 'អ៊ីមែល',
-            value: 'temp.ekyc@chipmongbank.com',
+            label: AppLanguage.tr(km: 'អ៊ីមែល', en: 'Email Address'),
+            value: 'mengtheth@chipmongbank.com',
             isLast: true,
+            isKhmer: isKhmer,
           ),
         ],
       ),
@@ -206,6 +241,7 @@ class MyProfileScreen extends StatelessWidget {
     required IconData icon,
     required String label,
     required String value,
+    required bool isKhmer,
     bool isLast = false,
   }) {
     return Padding(
@@ -221,20 +257,32 @@ class MyProfileScreen extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: GoogleFonts.battambang(
-                    fontSize: 14,
-                    color: const Color(0xFF94A3B8),
-                    fontWeight: FontWeight.w400,
-                  ),
+                  style: isKhmer
+                      ? GoogleFonts.battambang(
+                          fontSize: 14,
+                          color: const Color(0xFF94A3B8),
+                          fontWeight: FontWeight.w400,
+                        )
+                      : GoogleFonts.roboto(
+                          fontSize: 14,
+                          color: const Color(0xFF94A3B8),
+                          fontWeight: FontWeight.w400,
+                        ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: GoogleFonts.battambang(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF1E293B),
-                  ),
+                  style: isKhmer
+                      ? GoogleFonts.battambang(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1E293B),
+                        )
+                      : GoogleFonts.roboto(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1E293B),
+                        ),
                 ),
               ],
             ),

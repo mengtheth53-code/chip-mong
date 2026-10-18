@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/app_language.dart';
 
 void showLanguageBottomSheet(
   BuildContext context, {
@@ -36,7 +37,7 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _selected = widget.currentLanguage;
+    _selected = AppLanguage.currentLanguage;
   }
 
   @override
@@ -54,7 +55,7 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'ជ្រើសរើសភាសា',
+              AppLanguage.chooseLanguage,
               style: GoogleFonts.battambang(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -66,9 +67,10 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
               label: 'ភាសាខ្មែរ',
               flagEmoji: '🇰🇭',
               isKhmer: true,
-              isSelected: _selected == 'km' || _selected == 'ភាសាខ្មែរ',
+              isSelected: _selected == 'km',
               onTap: () {
                 setState(() => _selected = 'km');
+                AppLanguage.setLanguage('km');
                 widget.onLanguageSelected('ភាសាខ្មែរ');
                 Navigator.pop(context);
               },
@@ -78,9 +80,10 @@ class _LanguageBottomSheetState extends State<LanguageBottomSheet> {
               label: 'English',
               flagEmoji: '🇺🇸',
               isKhmer: false,
-              isSelected: _selected == 'en' || _selected == 'English',
+              isSelected: _selected == 'en',
               onTap: () {
                 setState(() => _selected = 'en');
+                AppLanguage.setLanguage('en');
                 widget.onLanguageSelected('English');
                 Navigator.pop(context);
               },

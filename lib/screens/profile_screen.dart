@@ -5,6 +5,7 @@ import 'aboutapp_screen.dart';
 import 'my_profile_screen.dart';
 import 'security_settings_screen.dart';
 import '../widgets/language_bottom_sheet.dart';
+import '../theme/app_language.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,89 +18,107 @@ class _ProfileScreenState extends State<ProfileScreen> {
   static const Color _green = Color(0xFF0C6B38);
   static const Color _bgGray = Color(0xFFF2F4F7);
 
-  String _currentLanguage = 'ភាសាខ្មែរ';
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bgGray,
-      body: Column(
-        children: [
-          _buildGreenHeader(context),
-          _buildMyProfileBar(context),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
-              child: Column(
-                children: [
-                  _buildMenuCard(
-                    icon: Icons.verified_user_rounded,
-                    label: 'សុវត្ថិភាព',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const SecuritySettingsScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard(
-                    icon: Icons.language_rounded,
-                    label: 'ភាសា',
-                    trailingText: _currentLanguage,
-                    onTap: () {
-                      showLanguageBottomSheet(
-                        context,
-                        currentLanguage: _currentLanguage,
-                        onLanguageSelected: (lang) {
-                          setState(() => _currentLanguage = lang);
+    return ValueListenableBuilder<String>(
+      valueListenable: AppLanguage.languageNotifier,
+      builder: (context, currentLang, _) {
+        final isKhmer = AppLanguage.isKhmer;
+
+        return Scaffold(
+          backgroundColor: _bgGray,
+          body: Column(
+            children: [
+              _buildGreenHeader(context, isKhmer),
+              _buildMyProfileBar(context, isKhmer),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+                  child: Column(
+                    children: [
+                      _buildMenuCard(
+                        icon: Icons.verified_user_rounded,
+                        label: AppLanguage.security,
+                        isKhmer: isKhmer,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SecuritySettingsScreen(),
+                            ),
+                          );
                         },
-                      );
-                    },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuCard(
+                        icon: Icons.language_rounded,
+                        label: AppLanguage.language,
+                        trailingText: AppLanguage.languageName,
+                        isKhmer: isKhmer,
+                        onTap: () {
+                          showLanguageBottomSheet(
+                            context,
+                            currentLanguage: AppLanguage.currentLanguage,
+                            onLanguageSelected: (lang) {
+                              AppLanguage.setLanguage(lang);
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildMenuCard(
+                        icon: Icons.edit_note_rounded,
+                        label: AppLanguage.termsAndConditions,
+                        isKhmer: isKhmer,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AboutAppScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 28),
+                      Text(
+                        AppLanguage.appVersion,
+                        style: isKhmer
+                            ? GoogleFonts.battambang(
+                                color: const Color(0xFF94A3B8),
+                                fontSize: 13,
+                              )
+                            : const TextStyle(
+                                color: Color(0xFF94A3B8),
+                                fontSize: 13,
+                              ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        AppLanguage.lastLogin,
+                        style: isKhmer
+                            ? GoogleFonts.battambang(
+                                color: const Color(0xFF94A3B8),
+                                fontSize: 13,
+                              )
+                            : const TextStyle(
+                                color: Color(0xFF94A3B8),
+                                fontSize: 13,
+                              ),
+                      ),
+                      const SizedBox(height: 36),
+                      _buildChipMongLogo(),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard(
-                    icon: Icons.edit_note_rounded,
-                    label: 'ខចែង និងលក្ខខណ្ឌទូទៅ',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const AboutAppScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 28),
-                  Text(
-                    'កំណែកម្មវិធី: 5.2.17 - 5021703',
-                    style: GoogleFonts.battambang(
-                      color: const Color(0xFF94A3B8),
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'login ចុងក្រោយ: Oct 05, 2026 | 11:39 PM',
-                    style: const TextStyle(
-                      color: Color(0xFF94A3B8),
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 36),
-                  _buildChipMongLogo(),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildGreenHeader(BuildContext context) {
+  Widget _buildGreenHeader(BuildContext context, bool isKhmer) {
     return Container(
       color: _green,
       child: SafeArea(
@@ -123,12 +142,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   Text(
-                    'ការកំណត់',
-                    style: GoogleFonts.battambang(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    AppLanguage.settings,
+                    style: isKhmer
+                        ? GoogleFonts.battambang(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          )
+                        : GoogleFonts.roboto(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
                   ),
                 ],
               ),
@@ -187,12 +212,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                'លេខសម្គាល់: 0126103000082',
-                style: GoogleFonts.battambang(
-                  color: Colors.white.withValues(alpha: 0.85),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
+                AppLanguage.userId,
+                style: isKhmer
+                    ? GoogleFonts.battambang(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      )
+                    : GoogleFonts.roboto(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
               ),
             ],
           ),
@@ -201,7 +232,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildMyProfileBar(BuildContext context) {
+  Widget _buildMyProfileBar(BuildContext context, bool isKhmer) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -215,12 +246,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'ប្រវត្តិរូបរបស់ខ្ញុំ',
-              style: GoogleFonts.battambang(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              AppLanguage.myProfile,
+              style: isKhmer
+                  ? GoogleFonts.battambang(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    )
+                  : GoogleFonts.roboto(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
             ),
             const Icon(
               Icons.chevron_right,
@@ -236,6 +273,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildMenuCard({
     required IconData icon,
     required String label,
+    required bool isKhmer,
     String? trailingText,
     required VoidCallback onTap,
   }) {
@@ -270,20 +308,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Expanded(
               child: Text(
                 label,
-                style: GoogleFonts.battambang(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1E293B),
-                ),
+                style: isKhmer
+                    ? GoogleFonts.battambang(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF1E293B),
+                      )
+                    : GoogleFonts.roboto(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF1E293B),
+                      ),
               ),
             ),
             if (trailingText != null) ...[
               Text(
                 trailingText,
-                style: GoogleFonts.battambang(
-                  fontSize: 15,
-                  color: const Color(0xFF64748B),
-                ),
+                style: isKhmer
+                    ? GoogleFonts.battambang(
+                        fontSize: 15,
+                        color: const Color(0xFF64748B),
+                      )
+                    : GoogleFonts.roboto(
+                        fontSize: 15,
+                        color: const Color(0xFF64748B),
+                      ),
               ),
               const SizedBox(width: 4),
             ],
