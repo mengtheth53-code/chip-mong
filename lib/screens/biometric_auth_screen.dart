@@ -889,53 +889,8 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Banner pitch
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF0F766E), Color(0xFF0D9488)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.touch_app_rounded, color: Color(0xFF5EEAD4), size: 22),
-                    const SizedBox(width: 8),
-                    Text(
-                      _isKhmer ? 'One-Touch QuickPay សម្រាប់ប្រតិបត្តិការតូច' : 'One-Touch QuickPay for Micro-Purchases',
-                      style: GoogleFonts.battambang(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _isKhmer
-                      ? 'ដូចមានបញ្ជាក់ក្នុងសំណើ ៤.១៖ ពេលទិញកាហ្វេ \$1.50 ឬទំនិញ \$5 នៅ Chip Mong Supermarket អតិថិជនគ្រាន់តែស្កេនមេដៃ ឬផ្ទៃមុខ One-Touch QuickPay ដោយមិនបាច់វាយលេខកូដ PIN រាល់ពេលឡើយ!'
-                      : 'Per Proposal 4.1: When buying \$1.50 coffee or \$5 groceries at Chip Mong Supermarket, customers approve instantly with One-Touch Biometrics without manual PIN fatigue.',
-                  style: GoogleFonts.battambang(
-                    fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.92),
-                    height: 1.45,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Presets strictly from Proposal 4.1
           Text(
-            _isKhmer ? 'ជ្រើសរើសប្រតិបត្តិការគំរូពីសំណើ ៤.១៖' : 'Select sample scenario from Proposal 4.1:',
+            _isKhmer ? 'ជ្រើសរើសប្រតិបត្តិការគំរូ៖' : 'Select sample scenario:',
             style: GoogleFonts.battambang(
               fontSize: 13,
               fontWeight: FontWeight.bold,
@@ -947,25 +902,25 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
           _buildTransactionOption(
             icon: Icons.coffee_rounded,
             title: 'Brown Coffee (ទិញកាហ្វេ)',
-            subtitle: 'Micro-purchase scenario from Proposal 4.1',
+            subtitle: _isKhmer ? 'ទូទាត់រហ័ស One-Touch QuickPay' : 'Instant One-Touch approval',
             amount: 1.50,
           ),
           _buildTransactionOption(
             icon: Icons.local_grocery_store_rounded,
             title: 'Chip Mong Supermarket (ទិញទំនិញ)',
-            subtitle: 'Groceries scenario from Proposal 4.1',
+            subtitle: _isKhmer ? 'ទិញទំនិញ Chip Mong Retail' : 'Chip Mong Retail purchase',
             amount: 5.00,
           ),
           _buildTransactionOption(
             icon: Icons.school_rounded,
             title: 'NUM Tuition Installment (សាកលវិទ្យាល័យ)',
-            subtitle: 'National University of Management (Proposal 4.3)',
+            subtitle: _isKhmer ? 'បង់ថ្លៃសិក្សា NUM' : 'National University of Management',
             amount: 250.00,
           ),
           _buildTransactionOption(
             icon: Icons.apartment_rounded,
             title: 'High-Value Transfer (ប្រតិបត្តិការខ្ពស់)',
-            subtitle: 'Step-Up Security fallback demo (> \$10 threshold)',
+            subtitle: _isKhmer ? 'ផ្ទៀងផ្ទាត់សុវត្ថិភាព Step-Up (> \$10)' : 'Step-Up Security (> \$10 threshold)',
             amount: 650.00,
           ),
 
@@ -1336,47 +1291,13 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
                       ),
                       Text(
                         _isKhmer
-                            ? 'កម្រិតក្រោម \$10 ជាកម្រិតសាកល្បងដំបូងស្របតាមសំណើ ៤.១'
-                            : 'Threshold under \$10 recommended for initial pilot per Proposal 4.1',
+                            ? 'ប្រតិបត្តិការក្រោមតម្លៃនេះ មិនតម្រូវឱ្យបញ្ចូល PIN ឡើយ'
+                            : 'Transactions under this threshold approve without PIN',
                         style: GoogleFonts.battambang(fontSize: 10.5, color: const Color(0xFF64748B)),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 18),
-
-          // Proposal 4.1 KPIs Dashboard Card
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0F172A),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.insights_rounded, color: Color(0xFF34D399), size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      _isKhmer ? 'សូចនាករវាស់វែងប្រសិទ្ធភាព (KPIs per 4.1)' : 'Success Metrics & KPIs (Proposal 4.1)',
-                      style: GoogleFonts.roboto(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildTechRow('Turnaround Time', '0.78s (Down from 6.5s)'),
-                _buildTechRow('Transaction Failure Rate', '< 0.02% (Target < 0.1%)'),
-                _buildTechRow('Public Shoulder Surfing Risk', '0% (PIN-free Micro-Pay)'),
-                _buildTechRow('Raw Biometric Server Leakage', '0% (FIDO2 On-Device Keystore)'),
               ],
             ),
           ),
@@ -1412,19 +1333,6 @@ class _BiometricAuthScreenState extends State<BiometricAuthScreen>
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildTechRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: GoogleFonts.roboto(fontSize: 11, color: Colors.white70)),
-          Text(value, style: GoogleFonts.roboto(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF34D399))),
-        ],
-      ),
     );
   }
 }
