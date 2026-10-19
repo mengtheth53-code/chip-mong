@@ -275,9 +275,9 @@ class _AiAssistantScreenState extends State<AiAssistantScreen>
           unselectedLabelColor: Colors.white60,
           labelStyle: GoogleFonts.battambang(fontWeight: FontWeight.w700, fontSize: 13),
           tabs: [
-            Tab(text: _isKhmer ? 'ជំនួយការសន្ទនា (Chat)' : 'AI Chat'),
-            Tab(text: _isKhmer ? 'ឥណទានឆ្លាតវៃ (Credit)' : 'Smart Credit'),
-            Tab(text: _isKhmer ? 'វិភាគការចំណាយ (Analytics)' : 'Analytics'),
+            Tab(text: _isKhmer ? 'ជំនួយការ AI' : 'AI Chat'),
+            Tab(text: _isKhmer ? 'ឥណទានឆ្លាតវៃ' : 'Smart Credit'),
+            Tab(text: _isKhmer ? 'វិភាគចំណាយ' : 'Analytics'),
           ],
         ),
       ),
@@ -481,19 +481,18 @@ class _AiAssistantScreenState extends State<AiAssistantScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 6,
+                            runSpacing: 4,
                             children: [
-                              Flexible(
-                                child: Text(
-                                  _isKhmer ? 'ពិន្ទុ Alternative Credit' : 'Alternative Credit Score',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.battambang(
-                                    color: Colors.white70,
-                                    fontSize: 12.5,
-                                  ),
+                              Text(
+                                _isKhmer ? 'ពិន្ទុ Alternative Credit' : 'Alternative Credit Score',
+                                style: GoogleFonts.battambang(
+                                  color: Colors.white70,
+                                  fontSize: 12.5,
                                 ),
                               ),
-                              const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
@@ -588,61 +587,75 @@ class _AiAssistantScreenState extends State<AiAssistantScreen>
           ),
           const SizedBox(height: 16),
 
-          // Mode Selector: Nano-Loans vs BNPL
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _selectedMode = 0),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: _selectedMode == 0 ? AppColors.primaryGreen : Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _selectedMode == 0 ? AppColors.primaryGreen : Colors.grey.shade300,
+          // Mode Selector: Nano-Loans vs BNPL (Equal-Height Segmented Selector)
+          Container(
+            height: 52,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.grey.shade300),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedMode = 0),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      curve: Curves.easeInOut,
+                      decoration: BoxDecoration(
+                        color: _selectedMode == 0 ? AppColors.primaryGreen : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Digital Nano-Loans (\$50-\$1k)',
-                        style: GoogleFonts.battambang(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.bold,
-                          color: _selectedMode == 0 ? Colors.white : Colors.black87,
+                      child: Center(
+                        child: Text(
+                          'Digital Nano-Loans (\$50-\$1k)',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.battambang(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: _selectedMode == 0 ? Colors.white : Colors.black87,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _selectedMode = 1),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: _selectedMode == 1 ? AppColors.primaryGreen : Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: _selectedMode == 1 ? AppColors.primaryGreen : Colors.grey.shade300,
+                const SizedBox(width: 4),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedMode = 1),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      curve: Curves.easeInOut,
+                      decoration: BoxDecoration(
+                        color: _selectedMode == 1 ? AppColors.primaryGreen : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Buy Now Pay Later (BNPL 0%)',
-                        style: GoogleFonts.battambang(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.bold,
-                          color: _selectedMode == 1 ? Colors.white : Colors.black87,
+                      child: Center(
+                        child: Text(
+                          'Buy Now Pay Later (BNPL 0%)',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.battambang(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: _selectedMode == 1 ? Colors.white : Colors.black87,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 18),
 
